@@ -1,0 +1,21 @@
+{
+  "name": "deployment-mcp",
+  "module": "index.ts",
+  "type": "module",
+  "workspaces": [
+    "tools",
+    "mcp",
+    "agent"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.797.0",
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "zod": "^3.24.3"
+  }
+}
