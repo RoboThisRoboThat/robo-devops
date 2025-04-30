@@ -11,7 +11,7 @@ import {
 } from "@aws-sdk/client-ec2";
 import { z } from "zod";
 
-export class LaunchInstanceService {
+class LaunchInstanceService {
 	/**
 	 * Launches a new EC2 instance with the specified parameters
 	 * @param region The AWS region to use (e.g., 'us-east-1', 'us-west-2')
@@ -26,17 +26,32 @@ export class LaunchInstanceService {
 	 */
 
 	toolName = "launch-ec2-instance";
-	description = "Launch a new EC2 instance in a specific AWS region with smart defaults";
-	launchInstanceInput = {
+	description =
+		"Launch a new EC2 instance in a specific AWS region with smart defaults";
+	launchInstanceInput = z.object({
 		region: z.string().describe("AWS region (e.g., us-east-1, us-west-2)"),
-		imageId: z.string().optional().describe("AMI ID to use for the instance. If not provided, a default Amazon Linux 2 image will be used"),
-		instanceType: z.string().describe("Instance type (e.g., t2.micro, t3.small)"),
+		imageId: z
+			.string()
+			.optional()
+			.describe(
+				"AMI ID to use for the instance. If not provided, a default Amazon Linux 2 image will be used",
+			),
+		instanceType: z
+			.string()
+			.describe("Instance type (e.g., t2.micro, t3.small)"),
 		keyName: z.string().optional().describe("SSH key name to use"),
 		securityGroupIds: z
 			.array(z.string())
 			.optional()
-			.describe("Array of security group IDs. If not provided, a default security group will be created"),
-		subnetId: z.string().optional().describe("Subnet ID to launch the instance in. If not provided, default subnet will be used"),
+			.describe(
+				"Array of security group IDs. If not provided, a default security group will be created",
+			),
+		subnetId: z
+			.string()
+			.optional()
+			.describe(
+				"Subnet ID to launch the instance in. If not provided, default subnet will be used",
+			),
 		tags: z
 			.array(
 				z.object({
@@ -50,8 +65,10 @@ export class LaunchInstanceService {
 			.boolean()
 			.optional()
 			.default(true)
-			.describe("Whether to create a default security group if securityGroupIds is empty"),
-	};
+			.describe(
+				"Whether to create a default security group if securityGroupIds is empty",
+			),
+	});
 
 	/**
 	 * Creates a default security group with SSH access
@@ -59,7 +76,10 @@ export class LaunchInstanceService {
 	 * @param vpcId The VPC ID to create the security group in
 	 * @returns Promise containing the security group ID
 	 */
-	private async createDefaultSecurityGroup(ec2Client: EC2Client, vpcId: string): Promise<string> {
+	private async createDefaultSecurityGroup(
+		ec2Client: EC2Client,
+		vpcId: string,
+	): Promise<string> {
 		// Create a security group
 		const groupName = `ec2-launch-${Date.now()}`;
 		const createSecurityGroupResponse = await ec2Client.send(
@@ -67,7 +87,7 @@ export class LaunchInstanceService {
 				GroupName: groupName,
 				Description: "Created automatically by LaunchInstanceService",
 				VpcId: vpcId,
-			})
+			}),
 		);
 
 		const securityGroupId = createSecurityGroupResponse.GroupId;
@@ -92,7 +112,7 @@ export class LaunchInstanceService {
 						],
 					},
 				],
-			})
+			}),
 		);
 
 		return securityGroupId;
@@ -103,7 +123,9 @@ export class LaunchInstanceService {
 	 * @param ec2Client The EC2 client to use
 	 * @returns Promise containing the subnet ID and VPC ID
 	 */
-	private async getDefaultSubnet(ec2Client: EC2Client): Promise<{ subnetId: string; vpcId: string }> {
+	private async getDefaultSubnet(
+		ec2Client: EC2Client,
+	): Promise<{ subnetId: string; vpcId: string }> {
 		const describeSubnetsResponse = await ec2Client.send(
 			new DescribeSubnetsCommand({
 				Filters: [
@@ -112,10 +134,13 @@ export class LaunchInstanceService {
 						Values: ["true"],
 					},
 				],
-			})
+			}),
 		);
 
-		if (!describeSubnetsResponse.Subnets || describeSubnetsResponse.Subnets.length === 0) {
+		if (
+			!describeSubnetsResponse.Subnets ||
+			describeSubnetsResponse.Subnets.length === 0
+		) {
 			throw new Error("No default subnets found");
 		}
 
@@ -154,10 +179,13 @@ export class LaunchInstanceService {
 						Values: ["amazon"],
 					},
 				],
-			})
+			}),
 		);
 
-		if (!describeImagesResponse.Images || describeImagesResponse.Images.length === 0) {
+		if (
+			!describeImagesResponse.Images ||
+			describeImagesResponse.Images.length === 0
+		) {
 			throw new Error("No default Amazon Linux 2 images found");
 		}
 
@@ -221,7 +249,7 @@ export class LaunchInstanceService {
 				const describeSubnetsResponse = await ec2Client.send(
 					new DescribeSubnetsCommand({
 						SubnetIds: [actualSubnetId],
-					})
+					}),
 				);
 
 				if (
@@ -237,7 +265,10 @@ export class LaunchInstanceService {
 
 			// Create a default security group if requested and no security groups provided
 			if (createDefaultSecurityGroup && actualSecurityGroupIds.length === 0) {
-				createdSecurityGroupId = await this.createDefaultSecurityGroup(ec2Client, vpcId);
+				createdSecurityGroupId = await this.createDefaultSecurityGroup(
+					ec2Client,
+					vpcId,
+				);
 				actualSecurityGroupIds = [createdSecurityGroupId];
 			}
 
@@ -251,7 +282,10 @@ export class LaunchInstanceService {
 				ImageId: actualImageId,
 				InstanceType: instanceType as _InstanceType,
 				KeyName: keyName,
-				SecurityGroupIds: actualSecurityGroupIds.length > 0 ? actualSecurityGroupIds : undefined,
+				SecurityGroupIds:
+					actualSecurityGroupIds.length > 0
+						? actualSecurityGroupIds
+						: undefined,
 				SubnetId: actualSubnetId,
 				MinCount: 1,
 				MaxCount: 1,

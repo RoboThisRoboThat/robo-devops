@@ -6,7 +6,7 @@ import {
 } from "@aws-sdk/client-ec2";
 import { z } from "zod";
 
-export class GetInstancesService {
+class GetInstancesService {
 	/**
 	 * Gets EC2 instances in the specified region with flexible filtering options
 	 * @param region The AWS region to use (e.g., 'us-east-1', 'us-west-2')
@@ -18,7 +18,7 @@ export class GetInstancesService {
 	toolName = "get-ec2-instances";
 	description =
 		"Get EC2 instances from a specific AWS region with flexible filtering options";
-	getInstancesInput = {
+	getInstancesInput = z.object({
 		region: z.string().describe("AWS region (e.g., us-east-1, us-west-2)"),
 		filters: z
 			.array(
@@ -42,7 +42,7 @@ export class GetInstancesService {
 			.optional()
 			.default(false)
 			.describe("Whether to include stopped instances in results"),
-	};
+	});
 	async getInstances({
 		region,
 		filters = [],
