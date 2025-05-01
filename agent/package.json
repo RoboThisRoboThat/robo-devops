@@ -1,0 +1,21 @@
+{
+  "name": "agent",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "tools": "workspace:*",
+    "@langchain/openai": "^0.5.7",
+    "langchain": "^0.1.21",
+    "@langchain/core": "^0.3.49",
+    "@langchain/langgraph": "^0.2.67"
+  }
+}
