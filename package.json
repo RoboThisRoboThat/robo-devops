@@ -5,7 +5,8 @@
   "workspaces": [
     "tools",
     "mcp",
-    "agent"
+    "agent",
+    "ui"
   ],
   "devDependencies": {
     "@types/bun": "latest"
