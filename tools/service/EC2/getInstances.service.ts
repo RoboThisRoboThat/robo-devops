@@ -18,7 +18,7 @@ class GetInstancesService {
 	toolName = "get-ec2-instances";
 	description =
 		"Get EC2 instances from a specific AWS region with flexible filtering options";
-	getInstancesInput = z.object({
+	getInstancesInput = {
 		region: z.string().describe("AWS region (e.g., us-east-1, us-west-2)"),
 		filters: z
 			.array(
@@ -42,7 +42,9 @@ class GetInstancesService {
 			.optional()
 			.default(false)
 			.describe("Whether to include stopped instances in results"),
-	});
+	};
+
+	getInstancesZodInput = z.object(this.getInstancesInput);
 	async getInstances({
 		region,
 		filters = [],

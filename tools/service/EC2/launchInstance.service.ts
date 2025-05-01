@@ -28,7 +28,7 @@ class LaunchInstanceService {
 	toolName = "launch-ec2-instance";
 	description =
 		"Launch a new EC2 instance in a specific AWS region with smart defaults";
-	launchInstanceInput = z.object({
+	launchInstanceInput = {
 		region: z.string().describe("AWS region (e.g., us-east-1, us-west-2)"),
 		imageId: z
 			.string()
@@ -68,7 +68,8 @@ class LaunchInstanceService {
 			.describe(
 				"Whether to create a default security group if securityGroupIds is empty",
 			),
-	});
+	};
+	launchInstanceZodInput = z.object(this.launchInstanceInput);
 
 	/**
 	 * Creates a default security group with SSH access
