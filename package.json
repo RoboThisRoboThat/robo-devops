@@ -16,11 +16,19 @@
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.797.0",
+    "@aws-sdk/client-elasticache": "^3.797.0",
+    "@aws-sdk/client-budgets": "^3.797.0",
+    "@aws-sdk/client-sts": "^3.797.0",
+    "@aws-sdk/client-sqs": "^3.797.0",
     "@langchain/community": "^0.3.41",
     "@langchain/core": "^0.3.49",
     "@langchain/langgraph": "^0.2.67",
     "@langchain/openai": "^0.5.7",
     "@modelcontextprotocol/sdk": "^1.10.2",
+    "@tailwindcss/vite": "^4.1.5",
+    "axios": "^1.9.0",
+    "hono": "^4.7.8",
+    "tailwindcss": "^4.1.5",
     "zod": "^3.24.3"
   }
 }

@@ -16,6 +16,7 @@
     "@langchain/openai": "^0.5.7",
     "langchain": "^0.1.21",
     "@langchain/core": "^0.3.49",
-    "@langchain/langgraph": "^0.2.67"
+    "@langchain/langgraph": "^0.2.67",
+    "hono": "^4.0.11"
   }
 }
