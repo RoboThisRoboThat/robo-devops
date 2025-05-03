@@ -1,5 +1,3 @@
-console.log("Hello via Bun!");
-
 // EC2 Services
 import getInstancesService from "./service/EC2/getInstances.service";
 import launchInstanceService from "./service/EC2/launchInstance.service";
