@@ -3,6 +3,7 @@ import {
 	DeleteReplicationGroupCommand,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteReplicationGroupService {
 	/**
@@ -89,4 +90,12 @@ class DeleteReplicationGroupService {
 	}
 }
 
-export default new DeleteReplicationGroupService();
+const deleteReplicationGroupService = new DeleteReplicationGroupService();
+
+export default new BaseService(
+	deleteReplicationGroupService.toolName,
+	deleteReplicationGroupService.description,
+	deleteReplicationGroupService.deleteReplicationGroupInput,
+	deleteReplicationGroupService.deleteReplicationGroupZodInput,
+	deleteReplicationGroupService.deleteReplicationGroup,
+);

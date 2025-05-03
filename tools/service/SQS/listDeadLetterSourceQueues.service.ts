@@ -3,6 +3,7 @@ import {
 	ListDeadLetterSourceQueuesCommand,
 } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListDeadLetterSourceQueuesService {
 	/**
@@ -64,4 +65,13 @@ class ListDeadLetterSourceQueuesService {
 	}
 }
 
-export default new ListDeadLetterSourceQueuesService();
+const listDeadLetterSourceQueuesService =
+	new ListDeadLetterSourceQueuesService();
+
+export default new BaseService(
+	listDeadLetterSourceQueuesService.toolName,
+	listDeadLetterSourceQueuesService.description,
+	listDeadLetterSourceQueuesService.listDeadLetterSourceQueuesInput,
+	listDeadLetterSourceQueuesService.listDeadLetterSourceQueuesZodInput,
+	listDeadLetterSourceQueuesService.listDeadLetterSourceQueues,
+);

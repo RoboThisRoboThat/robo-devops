@@ -1,6 +1,6 @@
 import { BudgetsClient, DescribeBudgetCommand } from "@aws-sdk/client-budgets";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class DescribeBudgetService {
 	/**
 	 * Describes a specific AWS budget
@@ -45,4 +45,12 @@ class DescribeBudgetService {
 	}
 }
 
-export default new DescribeBudgetService();
+const describeBudgetService = new DescribeBudgetService();
+
+export default new BaseService(
+	describeBudgetService.toolName,
+	describeBudgetService.description,
+	describeBudgetService.describeBudgetInput,
+	describeBudgetService.describeBudgetZodInput,
+	describeBudgetService.describeBudget,
+);

@@ -1,6 +1,6 @@
 import { ACMClient, DeleteCertificateCommand } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class DeleteCertificateService {
 	/**
 	 * Deletes a specified ACM certificate
@@ -49,4 +49,12 @@ class DeleteCertificateService {
 	}
 }
 
-export default new DeleteCertificateService();
+const deleteCertificateService = new DeleteCertificateService();
+
+export default new BaseService(
+	deleteCertificateService.toolName,
+	deleteCertificateService.description,
+	deleteCertificateService.deleteCertificateInput,
+	deleteCertificateService.deleteCertificateZodInput,
+	deleteCertificateService.deleteCertificate,
+);

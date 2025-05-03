@@ -1,7 +1,7 @@
 import { ACMClient, ImportCertificateCommand } from "@aws-sdk/client-acm";
 import { z } from "zod";
 import fs from "node:fs";
-
+import BaseService from "../base.service";
 class ImportCertificateService {
 	/**
 	 * Imports an existing SSL/TLS certificate into ACM
@@ -96,4 +96,12 @@ class ImportCertificateService {
 	}
 }
 
-export default new ImportCertificateService();
+const importCertificateService = new ImportCertificateService();
+
+export default new BaseService(
+	importCertificateService.toolName,
+	importCertificateService.description,
+	importCertificateService.importCertificateInput,
+	importCertificateService.importCertificateZodInput,
+	importCertificateService.importCertificate,
+);

@@ -3,6 +3,7 @@ import {
 	DescribeLogGroupsCommand,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListLogGroupsService {
 	/**
@@ -31,27 +32,29 @@ class ListLogGroupsService {
 
 	listLogGroupsZodInput = z.object(this.listLogGroupsInput);
 
-	async listLogGroups({
-		region,
-		logGroupNamePrefix,
-		outputFormat = "json",
-	}: {
-		region: string;
-		logGroupNamePrefix?: string;
-		outputFormat?: "text" | "json" | "table";
-	}) {
+	async listLogGroups(params: Record<string, unknown>) {
+		const {
+			region,
+			logGroupNamePrefix,
+			outputFormat = "json",
+		} = params as {
+			region: string;
+			logGroupNamePrefix?: string;
+			outputFormat?: "text" | "json" | "table";
+		};
+
 		try {
 			// Create CloudWatch Logs client for the specified region
 			const cloudwatchLogsClient = new CloudWatchLogsClient({ region });
 
 			// Prepare command parameters
-			const params: any = {};
+			const cmdParams: any = {};
 
 			if (logGroupNamePrefix) {
-				params.logGroupNamePrefix = logGroupNamePrefix;
+				cmdParams.logGroupNamePrefix = logGroupNamePrefix;
 			}
 
-			const command = new DescribeLogGroupsCommand(params);
+			const command = new DescribeLogGroupsCommand(cmdParams);
 			const response = await cloudwatchLogsClient.send(command);
 
 			// Process and format the response based on outputFormat
@@ -113,4 +116,12 @@ class ListLogGroupsService {
 	}
 }
 
-export default new ListLogGroupsService();
+const listLogGroupsService = new ListLogGroupsService();
+
+export default new BaseService(
+	listLogGroupsService.toolName,
+	listLogGroupsService.description,
+	listLogGroupsService.listLogGroupsInput,
+	listLogGroupsService.listLogGroupsZodInput,
+	listLogGroupsService.listLogGroups,
+);

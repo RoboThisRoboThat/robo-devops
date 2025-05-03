@@ -1,5 +1,6 @@
 import { S3Client, PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class EnableVersioningService {
 	/**
@@ -59,4 +60,12 @@ class EnableVersioningService {
 	}
 }
 
-export default new EnableVersioningService();
+const enableVersioningService = new EnableVersioningService();
+
+export default new BaseService(
+	enableVersioningService.toolName,
+	enableVersioningService.description,
+	enableVersioningService.enableVersioningInput,
+	enableVersioningService.enableVersioningZodInput,
+	enableVersioningService.enableVersioning,
+);

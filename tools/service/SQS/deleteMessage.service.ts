@@ -1,5 +1,6 @@
 import { SQSClient, DeleteMessageCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteMessageService {
 	/**
@@ -59,4 +60,12 @@ class DeleteMessageService {
 	}
 }
 
-export default new DeleteMessageService();
+const deleteMessageService = new DeleteMessageService();
+
+export default new BaseService(
+	deleteMessageService.toolName,
+	deleteMessageService.description,
+	deleteMessageService.deleteMessageInput,
+	deleteMessageService.deleteMessageZodInput,
+	deleteMessageService.deleteMessage,
+);

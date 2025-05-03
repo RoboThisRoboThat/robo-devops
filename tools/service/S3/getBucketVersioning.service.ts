@@ -1,5 +1,6 @@
 import { S3Client, GetBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetBucketVersioningService {
 	/**
@@ -79,4 +80,12 @@ class GetBucketVersioningService {
 	}
 }
 
-export default new GetBucketVersioningService();
+const getBucketVersioningService = new GetBucketVersioningService();
+
+export default new BaseService(
+	getBucketVersioningService.toolName,
+	getBucketVersioningService.description,
+	getBucketVersioningService.getBucketVersioningInput,
+	getBucketVersioningService.getBucketVersioningZodInput,
+	getBucketVersioningService.getBucketVersioning,
+);

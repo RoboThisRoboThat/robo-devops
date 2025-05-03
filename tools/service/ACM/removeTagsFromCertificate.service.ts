@@ -3,7 +3,7 @@ import {
 	RemoveTagsFromCertificateCommand,
 } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class RemoveTagsFromCertificateService {
 	/**
 	 * Removes one or more tags from an ACM certificate
@@ -66,4 +66,12 @@ class RemoveTagsFromCertificateService {
 	}
 }
 
-export default new RemoveTagsFromCertificateService();
+const removeTagsFromCertificateService = new RemoveTagsFromCertificateService();
+
+export default new BaseService(
+	removeTagsFromCertificateService.toolName,
+	removeTagsFromCertificateService.description,
+	removeTagsFromCertificateService.removeTagsFromCertificateInput,
+	removeTagsFromCertificateService.removeTagsFromCertificateZodInput,
+	removeTagsFromCertificateService.removeTagsFromCertificate,
+);

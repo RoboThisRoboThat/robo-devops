@@ -1,6 +1,6 @@
 import { BudgetsClient, DeleteBudgetCommand } from "@aws-sdk/client-budgets";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class DeleteBudgetService {
 	/**
 	 * Deletes a specified AWS budget
@@ -49,4 +49,12 @@ class DeleteBudgetService {
 	}
 }
 
-export default new DeleteBudgetService();
+const deleteBudgetService = new DeleteBudgetService();
+
+export default new BaseService(
+	deleteBudgetService.toolName,
+	deleteBudgetService.description,
+	deleteBudgetService.deleteBudgetInput,
+	deleteBudgetService.deleteBudgetZodInput,
+	deleteBudgetService.deleteBudget,
+);

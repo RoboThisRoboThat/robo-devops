@@ -1,5 +1,6 @@
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListObjectsService {
 	/**
@@ -101,4 +102,12 @@ class ListObjectsService {
 	}
 }
 
-export default new ListObjectsService();
+const listObjectsService = new ListObjectsService();
+
+export default new BaseService(
+	listObjectsService.toolName,
+	listObjectsService.description,
+	listObjectsService.listObjectsInput,
+	listObjectsService.listObjectsZodInput,
+	listObjectsService.listObjects,
+);

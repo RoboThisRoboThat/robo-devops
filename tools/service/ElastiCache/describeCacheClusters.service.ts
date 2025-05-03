@@ -1,9 +1,9 @@
 import {
 	ElastiCacheClient,
 	DescribeCacheClustersCommand,
-	CacheCluster,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DescribeCacheClustersService {
 	/**
@@ -129,4 +129,12 @@ class DescribeCacheClustersService {
 	}
 }
 
-export default new DescribeCacheClustersService();
+const describeCacheClustersService = new DescribeCacheClustersService();
+
+export default new BaseService(
+	describeCacheClustersService.toolName,
+	describeCacheClustersService.description,
+	describeCacheClustersService.describeCacheClustersInput,
+	describeCacheClustersService.describeCacheClustersZodInput,
+	describeCacheClustersService.describeCacheClusters,
+);

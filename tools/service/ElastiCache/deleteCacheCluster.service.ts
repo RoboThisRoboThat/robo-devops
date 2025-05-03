@@ -3,6 +3,7 @@ import {
 	DeleteCacheClusterCommand,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteCacheClusterService {
 	/**
@@ -95,4 +96,12 @@ class DeleteCacheClusterService {
 	}
 }
 
-export default new DeleteCacheClusterService();
+const deleteCacheClusterService = new DeleteCacheClusterService();
+
+export default new BaseService(
+	deleteCacheClusterService.toolName,
+	deleteCacheClusterService.description,
+	deleteCacheClusterService.deleteCacheClusterInput,
+	deleteCacheClusterService.deleteCacheClusterZodInput,
+	deleteCacheClusterService.deleteCacheCluster,
+);

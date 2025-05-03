@@ -1,6 +1,6 @@
 import { ACMClient, RequestCertificateCommand } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class RequestCertificateService {
 	/**
 	 * Requests a new SSL/TLS certificate from ACM
@@ -140,4 +140,12 @@ class RequestCertificateService {
 	}
 }
 
-export default new RequestCertificateService();
+const requestCertificateService = new RequestCertificateService();
+
+export default new BaseService(
+	requestCertificateService.toolName,
+	requestCertificateService.description,
+	requestCertificateService.requestCertificateInput,
+	requestCertificateService.requestCertificateZodInput,
+	requestCertificateService.requestCertificate,
+);

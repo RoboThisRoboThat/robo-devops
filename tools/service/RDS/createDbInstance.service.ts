@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateDbInstanceService {
 	/**
@@ -247,4 +248,12 @@ class CreateDbInstanceService {
 	}
 }
 
-export default new CreateDbInstanceService();
+const createDbInstanceService = new CreateDbInstanceService();
+
+export default new BaseService(
+	createDbInstanceService.toolName,
+	createDbInstanceService.description,
+	createDbInstanceService.createDbInstanceInput,
+	createDbInstanceService.createDbInstanceZodInput,
+	createDbInstanceService.createDbInstance,
+);

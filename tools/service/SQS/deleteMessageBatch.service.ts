@@ -1,5 +1,6 @@
 import { SQSClient, DeleteMessageBatchCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteMessageBatchService {
 	/**
@@ -103,4 +104,12 @@ class DeleteMessageBatchService {
 	}
 }
 
-export default new DeleteMessageBatchService();
+const deleteMessageBatchService = new DeleteMessageBatchService();
+
+export default new BaseService(
+	deleteMessageBatchService.toolName,
+	deleteMessageBatchService.description,
+	deleteMessageBatchService.deleteMessageBatchInput,
+	deleteMessageBatchService.deleteMessageBatchZodInput,
+	deleteMessageBatchService.deleteMessageBatch,
+);

@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import fs from "node:fs";
+import BaseService from "../base.service";
 
 class SetBucketAclService {
 	/**
@@ -155,4 +156,12 @@ class SetBucketAclService {
 	}
 }
 
-export default new SetBucketAclService();
+const setBucketAclService = new SetBucketAclService();
+
+export default new BaseService(
+	setBucketAclService.toolName,
+	setBucketAclService.description,
+	setBucketAclService.setBucketAclInput,
+	setBucketAclService.setBucketAclZodInput,
+	setBucketAclService.setBucketAcl,
+);

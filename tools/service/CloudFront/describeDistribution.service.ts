@@ -2,8 +2,11 @@ import {
 	CloudFrontClient,
 	GetDistributionCommand,
 	type Distribution,
+	type Origin,
+	type CustomErrorResponse,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DescribeDistributionService {
 	/**
@@ -32,13 +35,7 @@ class DescribeDistributionService {
 
 	describeDistributionZodInput = z.object(this.describeDistributionInput);
 
-	async describeDistribution({
-		distributionId,
-		outputFormat = "text",
-	}: {
-		distributionId: string;
-		outputFormat?: "text" | "json" | "table";
-	}): Promise<{
+	async describeDistribution(params: Record<string, unknown>): Promise<{
 		distribution: {
 			id: string;
 			arn: string;
@@ -91,6 +88,11 @@ class DescribeDistributionService {
 		};
 		rawDistribution?: Distribution;
 	}> {
+		const { distributionId, outputFormat = "text" } = params as {
+			distributionId: string;
+			outputFormat?: "text" | "json" | "table";
+		};
+
 		try {
 			const client = new CloudFrontClient({});
 			const command = new GetDistributionCommand({
@@ -119,7 +121,7 @@ class DescribeDistributionService {
 				status: dist.Status || "",
 				domainName: dist.DomainName || "",
 				enabled: distConfig.Enabled || false,
-				origins: (distConfig.Origins?.Items || []).map((origin: any) => ({
+				origins: (distConfig.Origins?.Items || []).map((origin: Origin) => ({
 					id: origin.Id || "",
 					domainName: origin.DomainName || "",
 					originPath: origin.OriginPath,
@@ -135,7 +137,8 @@ class DescribeDistributionService {
 					allowedMethods:
 						distConfig.DefaultCacheBehavior?.AllowedMethods?.Items || [],
 					cachedMethods:
-						distConfig.DefaultCacheBehavior?.CachedMethods?.Items || [],
+						distConfig.DefaultCacheBehavior?.AllowedMethods?.CachedMethods
+							?.Items || [],
 					compress: distConfig.DefaultCacheBehavior?.Compress,
 					forwardQueryStrings:
 						distConfig.DefaultCacheBehavior?.ForwardedValues?.QueryString,
@@ -143,8 +146,8 @@ class DescribeDistributionService {
 						distConfig.DefaultCacheBehavior?.ForwardedValues?.Headers?.Items,
 				},
 				customErrorResponses: distConfig.CustomErrorResponses?.Items?.map(
-					(error: any) => ({
-						errorCode: error.ErrorCode,
+					(error: CustomErrorResponse) => ({
+						errorCode: error.ErrorCode || 0, // Providing a default value to ensure it's not undefined
 						responsePagePath: error.ResponsePagePath,
 						responseCode: error.ResponseCode,
 						errorCachingMinTTL: error.ErrorCachingMinTTL,
@@ -198,4 +201,14 @@ class DescribeDistributionService {
 	}
 }
 
-export default new DescribeDistributionService();
+const describeDistributionService = new DescribeDistributionService();
+
+export default new BaseService(
+	describeDistributionService.toolName,
+	describeDistributionService.description,
+	describeDistributionService.describeDistributionInput,
+	describeDistributionService.describeDistributionZodInput,
+	describeDistributionService.describeDistribution.bind(
+		describeDistributionService,
+	),
+);

@@ -1,5 +1,6 @@
 import { SQSClient, GetQueueUrlCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetQueueUrlService {
 	/**
@@ -74,4 +75,12 @@ class GetQueueUrlService {
 	}
 }
 
-export default new GetQueueUrlService();
+const getQueueUrlService = new GetQueueUrlService();
+
+export default new BaseService(
+	getQueueUrlService.toolName,
+	getQueueUrlService.description,
+	getQueueUrlService.getQueueUrlInput,
+	getQueueUrlService.getQueueUrlZodInput,
+	getQueueUrlService.getQueueUrl,
+);

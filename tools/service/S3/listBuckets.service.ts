@@ -1,5 +1,6 @@
 import { S3Client, ListBucketsCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListBucketsService {
 	/**
@@ -55,4 +56,12 @@ class ListBucketsService {
 	}
 }
 
-export default new ListBucketsService();
+const listBucketsService = new ListBucketsService();
+
+export default new BaseService(
+	listBucketsService.toolName,
+	listBucketsService.description,
+	listBucketsService.listBucketsInput,
+	listBucketsService.listBucketsZodInput,
+	listBucketsService.listBuckets,
+);

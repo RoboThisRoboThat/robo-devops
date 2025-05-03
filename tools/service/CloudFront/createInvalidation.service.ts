@@ -3,6 +3,7 @@ import {
 	CreateInvalidationCommand,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateInvalidationService {
 	/**
@@ -38,20 +39,18 @@ class CreateInvalidationService {
 
 	createInvalidationZodInput = z.object(this.createInvalidationInput);
 
-	async createInvalidation({
-		distributionId,
-		paths,
-		callerReference,
-	}: {
-		distributionId: string;
-		paths: string;
-		callerReference?: string;
-	}): Promise<{
+	async createInvalidation(params: Record<string, unknown>): Promise<{
 		invalidationId: string;
 		status: string;
 		createTime?: Date;
 		pathsInvalidated: string[];
 	}> {
+		const { distributionId, paths, callerReference } = params as {
+			distributionId: string;
+			paths: string;
+			callerReference?: string;
+		};
+
 		try {
 			// Create CloudFront client
 			const client = new CloudFrontClient({});
@@ -94,4 +93,12 @@ class CreateInvalidationService {
 	}
 }
 
-export default new CreateInvalidationService();
+const createInvalidationService = new CreateInvalidationService();
+
+export default new BaseService(
+	createInvalidationService.toolName,
+	createInvalidationService.description,
+	createInvalidationService.createInvalidationInput,
+	createInvalidationService.createInvalidationZodInput,
+	createInvalidationService.createInvalidation.bind(createInvalidationService),
+);

@@ -1,5 +1,6 @@
 import { SQSClient, CreateQueueCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateQueueService {
 	/**
@@ -103,4 +104,12 @@ class CreateQueueService {
 	}
 }
 
-export default new CreateQueueService();
+const createQueueService = new CreateQueueService();
+
+export default new BaseService(
+	createQueueService.toolName,
+	createQueueService.description,
+	createQueueService.createQueueInput,
+	createQueueService.createQueueZodInput,
+	createQueueService.createQueue,
+);

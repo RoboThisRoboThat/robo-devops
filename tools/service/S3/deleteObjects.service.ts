@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import fs from "node:fs";
+import BaseService from "../base.service";
 
 class DeleteObjectsService {
 	/**
@@ -83,4 +84,12 @@ class DeleteObjectsService {
 	}
 }
 
-export default new DeleteObjectsService();
+const deleteObjectsService = new DeleteObjectsService();
+
+export default new BaseService(
+	deleteObjectsService.toolName,
+	deleteObjectsService.description,
+	deleteObjectsService.deleteObjectsInput,
+	deleteObjectsService.deleteObjectsZodInput,
+	deleteObjectsService.deleteObjects,
+);

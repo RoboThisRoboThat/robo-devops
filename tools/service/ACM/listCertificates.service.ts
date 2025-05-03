@@ -4,7 +4,7 @@ import {
 	type CertificateSummary,
 } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class ListCertificatesService {
 	/**
 	 * Retrieves a list of ACM certificates
@@ -78,4 +78,12 @@ class ListCertificatesService {
 	}
 }
 
-export default new ListCertificatesService();
+const listCertificatesService = new ListCertificatesService();
+
+export default new BaseService(
+	listCertificatesService.toolName,
+	listCertificatesService.description,
+	listCertificatesService.listCertificatesInput,
+	listCertificatesService.listCertificatesZodInput,
+	listCertificatesService.listCertificates,
+);

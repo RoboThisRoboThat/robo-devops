@@ -4,6 +4,7 @@ import {
 	type ResourceRecordSet,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListResourceRecordSetsService {
 	/**
@@ -92,4 +93,12 @@ class ListResourceRecordSetsService {
 	}
 }
 
-export default new ListResourceRecordSetsService();
+const listResourceRecordSetsService = new ListResourceRecordSetsService();
+
+export default new BaseService(
+	listResourceRecordSetsService.toolName,
+	listResourceRecordSetsService.description,
+	listResourceRecordSetsService.listResourceRecordSetsInput,
+	listResourceRecordSetsService.listResourceRecordSetsZodInput,
+	listResourceRecordSetsService.listResourceRecordSets,
+);

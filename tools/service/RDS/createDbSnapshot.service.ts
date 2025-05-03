@@ -2,23 +2,31 @@ import {
 	RDSClient,
 	CreateDBSnapshotCommand,
 	type Tag,
+	type DBSnapshot,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
+
+interface CreateDbSnapshotInput {
+	region: string;
+	dbInstanceIdentifier: string;
+	dbSnapshotIdentifier: string;
+	tags?: Tag[];
+}
+
+interface CreateDbSnapshotOutput {
+	snapshot: DBSnapshot | undefined;
+}
 
 class CreateDbSnapshotService {
 	/**
 	 * Creates a snapshot of a specified RDS DB instance
-	 * @param region The AWS region to use
-	 * @param dbInstanceIdentifier The unique identifier of the source DB instance
-	 * @param dbSnapshotIdentifier The identifier for the new DB snapshot
-	 * @param tags Optional tags to apply to the new DB snapshot
-	 * @returns Promise containing information about the created snapshot
 	 */
 
 	toolName = "create-db-snapshot";
 	description = "Creates a snapshot of a specified RDS DB instance";
 
-	createDbSnapshotInput = {
+	inputSchema = {
 		region: z
 			.string()
 			.describe("Specifies the AWS region where the DB instance resides"),
@@ -41,19 +49,14 @@ class CreateDbSnapshotService {
 			),
 	};
 
-	createDbSnapshotZodInput = z.object(this.createDbSnapshotInput);
+	zodSchema = z.object(this.inputSchema);
 
-	async createDbSnapshot({
+	async execute({
 		region,
 		dbInstanceIdentifier,
 		dbSnapshotIdentifier,
 		tags,
-	}: {
-		region: string;
-		dbInstanceIdentifier: string;
-		dbSnapshotIdentifier: string;
-		tags?: Tag[];
-	}) {
+	}: CreateDbSnapshotInput): Promise<CreateDbSnapshotOutput> {
 		try {
 			// Create a new RDSClient for the provided region
 			const rdsClient = new RDSClient({ region });
@@ -81,4 +84,12 @@ class CreateDbSnapshotService {
 	}
 }
 
-export default new CreateDbSnapshotService();
+const createDbSnapshotService = new CreateDbSnapshotService();
+
+export default new BaseService(
+	createDbSnapshotService.toolName,
+	createDbSnapshotService.description,
+	createDbSnapshotService.inputSchema,
+	createDbSnapshotService.zodSchema,
+	createDbSnapshotService.execute,
+);

@@ -1,9 +1,6 @@
-import {
-	RDSClient,
-	DescribeDBInstancesCommand,
-	DBInstance,
-} from "@aws-sdk/client-rds";
+import { RDSClient, DescribeDBInstancesCommand } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListDbInstancesService {
 	/**
@@ -91,4 +88,12 @@ class ListDbInstancesService {
 	}
 }
 
-export default new ListDbInstancesService();
+const listDbInstancesService = new ListDbInstancesService();
+
+export default new BaseService(
+	listDbInstancesService.toolName,
+	listDbInstancesService.description,
+	listDbInstancesService.listDbInstancesInput,
+	listDbInstancesService.listDbInstancesZodInput,
+	listDbInstancesService.listDbInstances,
+);

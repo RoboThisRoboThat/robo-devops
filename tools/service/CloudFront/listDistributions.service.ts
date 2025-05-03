@@ -2,8 +2,10 @@ import {
 	CloudFrontClient,
 	ListDistributionsCommand,
 	type DistributionSummary,
+	type Origin,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListDistributionsService {
 	/**
@@ -26,11 +28,7 @@ class ListDistributionsService {
 
 	listDistributionsZodInput = z.object(this.listDistributionsInput);
 
-	async listDistributions({
-		outputFormat = "text",
-	}: {
-		outputFormat?: "text" | "json" | "table";
-	}): Promise<{
+	async listDistributions(params: Record<string, unknown>): Promise<{
 		distributions: Array<{
 			id: string;
 			domainName: string;
@@ -46,6 +44,10 @@ class ListDistributionsService {
 		}>;
 		rawOutput?: DistributionSummary[];
 	}> {
+		const { outputFormat = "text" } = params as {
+			outputFormat?: "text" | "json" | "table";
+		};
+
 		try {
 			const client = new CloudFrontClient({});
 			const command = new ListDistributionsCommand({});
@@ -60,7 +62,7 @@ class ListDistributionsService {
 					domainName: dist.DomainName || "",
 					status: dist.Status || "",
 					enabled: dist.Enabled || false,
-					origins: (dist.Origins?.Items || []).map((origin: any) => ({
+					origins: (dist.Origins?.Items || []).map((origin: Origin) => ({
 						domainName: origin.DomainName || "",
 						id: origin.Id || "",
 						path: origin.OriginPath || undefined,
@@ -86,4 +88,12 @@ class ListDistributionsService {
 	}
 }
 
-export default new ListDistributionsService();
+const listDistributionsService = new ListDistributionsService();
+
+export default new BaseService(
+	listDistributionsService.toolName,
+	listDistributionsService.description,
+	listDistributionsService.listDistributionsInput,
+	listDistributionsService.listDistributionsZodInput,
+	listDistributionsService.listDistributions.bind(listDistributionsService),
+);

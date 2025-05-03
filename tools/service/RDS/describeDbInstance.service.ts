@@ -1,10 +1,10 @@
 import {
 	RDSClient,
 	DescribeDBInstancesCommand,
-	DBInstance,
+	type DBInstance,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class DescribeDbInstanceService {
 	/**
 	 * Displays detailed information about a specific RDS DB instance
@@ -78,4 +78,12 @@ class DescribeDbInstanceService {
 	}
 }
 
-export default new DescribeDbInstanceService();
+const describeDbInstanceService = new DescribeDbInstanceService();
+
+export default new BaseService(
+	describeDbInstanceService.toolName,
+	describeDbInstanceService.description,
+	describeDbInstanceService.describeDbInstanceInput,
+	describeDbInstanceService.describeDbInstanceZodInput,
+	describeDbInstanceService.describeDbInstance,
+);

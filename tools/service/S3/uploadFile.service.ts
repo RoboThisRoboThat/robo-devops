@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import fs from "fs";
+import BaseService from "../base.service";
 
 class UploadFileService {
 	/**
@@ -147,4 +148,12 @@ class UploadFileService {
 	}
 }
 
-export default new UploadFileService();
+const uploadFileService = new UploadFileService();
+
+export default new BaseService(
+	uploadFileService.toolName,
+	uploadFileService.description,
+	uploadFileService.uploadFileInput,
+	uploadFileService.uploadFileZodInput,
+	uploadFileService.uploadFile,
+);

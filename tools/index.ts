@@ -83,10 +83,8 @@ import setQueuePolicyService from "./service/SQS/setQueuePolicy.service";
 import addPermissionService from "./service/SQS/addPermission.service";
 import removePermissionService from "./service/SQS/removePermission.service";
 import listDeadLetterSourceQueuesService from "./service/SQS/listDeadLetterSourceQueues.service";
-
-// Export all services
-export {
-	// EC2
+import type BaseService from "./service/base.service";
+const tools: BaseService[] = [
 	getInstancesService,
 	launchInstanceService,
 	// ElastiCache
@@ -162,4 +160,5 @@ export {
 	addPermissionService,
 	removePermissionService,
 	listDeadLetterSourceQueuesService,
-};
+];
+export default tools;

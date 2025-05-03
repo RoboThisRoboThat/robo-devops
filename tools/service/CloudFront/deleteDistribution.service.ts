@@ -6,6 +6,7 @@ import {
 	type GetDistributionConfigCommandOutput,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteDistributionService {
 	/**
@@ -36,18 +37,22 @@ class DeleteDistributionService {
 
 	deleteDistributionZodInput = z.object(this.deleteDistributionInput);
 
-	async deleteDistribution({
-		distributionId,
-		ifMatch,
-		force = false,
-	}: {
-		distributionId: string;
-		ifMatch: string;
-		force?: boolean;
-	}): Promise<{
+	async deleteDistribution(params: Record<string, unknown>): Promise<{
 		success: boolean;
 		message: string;
 	}> {
+		const {
+			distributionId,
+			ifMatch: originalIfMatch,
+			force = false,
+		} = params as {
+			distributionId: string;
+			ifMatch: string;
+			force?: boolean;
+		};
+
+		let currentIfMatch = originalIfMatch;
+
 		try {
 			// Create CloudFront client
 			const client = new CloudFrontClient({});
@@ -100,14 +105,14 @@ class DeleteDistributionService {
 					);
 
 					// Use the new ETag for deletion
-					ifMatch = updateResponse.ETag || ifMatch;
+					currentIfMatch = updateResponse.ETag || currentIfMatch;
 				}
 			}
 
 			// Now attempt to delete the distribution
 			const deleteCommand = new DeleteDistributionCommand({
 				Id: distributionId,
-				IfMatch: ifMatch,
+				IfMatch: currentIfMatch,
 			});
 
 			await client.send(deleteCommand);
@@ -126,7 +131,7 @@ class DeleteDistributionService {
 			} else if (error.name === "PreconditionFailed") {
 				return {
 					success: false,
-					message: `The provided ETag (${ifMatch}) doesn't match the current ETag for distribution ${distributionId}. Please get the latest ETag and try again.`,
+					message: `The provided ETag (${currentIfMatch}) doesn't match the current ETag for distribution ${distributionId}. Please get the latest ETag and try again.`,
 				};
 			} else if (error.name === "NoSuchDistribution") {
 				return {
@@ -148,4 +153,12 @@ class DeleteDistributionService {
 	}
 }
 
-export default new DeleteDistributionService();
+const deleteDistributionService = new DeleteDistributionService();
+
+export default new BaseService(
+	deleteDistributionService.toolName,
+	deleteDistributionService.description,
+	deleteDistributionService.deleteDistributionInput,
+	deleteDistributionService.deleteDistributionZodInput,
+	deleteDistributionService.deleteDistribution.bind(deleteDistributionService),
+);

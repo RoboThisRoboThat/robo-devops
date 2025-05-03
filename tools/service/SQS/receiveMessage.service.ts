@@ -1,5 +1,6 @@
 import { SQSClient, ReceiveMessageCommand, Message } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ReceiveMessageService {
 	/**
@@ -138,4 +139,12 @@ class ReceiveMessageService {
 	}
 }
 
-export default new ReceiveMessageService();
+const receiveMessageService = new ReceiveMessageService();
+
+export default new BaseService(
+	receiveMessageService.toolName,
+	receiveMessageService.description,
+	receiveMessageService.receiveMessageInput,
+	receiveMessageService.receiveMessageZodInput,
+	receiveMessageService.receiveMessage,
+);

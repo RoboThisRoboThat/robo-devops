@@ -1,5 +1,6 @@
 import { SQSClient, AddPermissionCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class AddPermissionService {
 	/**
@@ -93,4 +94,12 @@ class AddPermissionService {
 	}
 }
 
-export default new AddPermissionService();
+const addPermissionService = new AddPermissionService();
+
+export default new BaseService(
+	addPermissionService.toolName,
+	addPermissionService.description,
+	addPermissionService.addPermissionInput,
+	addPermissionService.addPermissionZodInput,
+	addPermissionService.addPermission,
+);

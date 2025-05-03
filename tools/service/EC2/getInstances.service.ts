@@ -5,7 +5,7 @@ import {
 	type Filter,
 } from "@aws-sdk/client-ec2";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class GetInstancesService {
 	/**
 	 * Gets EC2 instances in the specified region with flexible filtering options
@@ -45,17 +45,9 @@ class GetInstancesService {
 	};
 
 	getInstancesZodInput = z.object(this.getInstancesInput);
-	async getInstances({
-		region,
-		filters = [],
-		nameFilter,
-		includeStoppedInstances = false,
-	}: {
-		region: string;
-		filters?: Filter[];
-		nameFilter?: string;
-		includeStoppedInstances?: boolean;
-	}): Promise<
+	async getInstances(
+		params: z.infer<typeof this.getInstancesZodInput>,
+	): Promise<
 		{
 			name: string | null;
 			instanceType: string | null;
@@ -64,12 +56,13 @@ class GetInstancesService {
 			maintainerTag: string | null;
 		}[]
 	> {
+		const { region, filters, nameFilter, includeStoppedInstances } = params;
 		try {
 			// Create a new EC2Client for each call with the provided region
 			const ec2Client = new EC2Client({ region });
 
 			// Process filters to make them search-based and case-insensitive
-			const processedFilters: Filter[] = filters.map((filter) => {
+			const processedFilters: Filter[] = (filters || []).map((filter) => {
 				// Apply wildcards to all other filter values for non-exact matching
 				return {
 					Name: filter.Name || "",
@@ -84,7 +77,7 @@ class GetInstancesService {
 			const combinedFilters: Filter[] = [...processedFilters];
 
 			// Add instance state filter unless it's already specified in custom filters
-			if (!filters.some((filter) => filter.Name === "instance-state-name")) {
+			if (!filters?.some((filter) => filter.Name === "instance-state-name")) {
 				if (includeStoppedInstances) {
 					combinedFilters.push({
 						Name: "instance-state-name",
@@ -100,7 +93,10 @@ class GetInstancesService {
 
 			// Add name filter if provided (for backward compatibility)
 			// Already using wildcards and made case-insensitive by default
-			if (nameFilter && !filters.some((filter) => filter.Name === "tag:Name")) {
+			if (
+				nameFilter &&
+				!filters?.some((filter) => filter.Name === "tag:Name")
+			) {
 				combinedFilters.push({
 					Name: "tag:Name",
 					Values: [`*${nameFilter.toLowerCase()}*`], // Using wildcard and lowercase for case-insensitive matching
@@ -164,42 +160,14 @@ class GetInstancesService {
 			throw error;
 		}
 	}
-
-	/**
-	 * Gets instance details by instance ID
-	 * @param region The AWS region to use (e.g., 'us-east-1', 'us-west-2')
-	 * @param instanceId The EC2 instance ID
-	 * @returns Promise containing the instance details or null if not found
-	 */
-	async getInstanceById(
-		region: string,
-		instanceId: string,
-	): Promise<Instance | null> {
-		try {
-			// Create a new EC2Client for each call with the provided region
-			const ec2Client = new EC2Client({ region });
-
-			const command = new DescribeInstancesCommand({
-				InstanceIds: [instanceId],
-			});
-
-			const response = await ec2Client.send(command);
-
-			if (
-				response.Reservations &&
-				response.Reservations.length > 0 &&
-				response.Reservations[0].Instances &&
-				response.Reservations[0].Instances.length > 0
-			) {
-				return response.Reservations[0].Instances[0];
-			}
-
-			return null;
-		} catch (error) {
-			console.error(`Error getting EC2 instance ${instanceId}:`, error);
-			throw error;
-		}
-	}
 }
 
-export default new GetInstancesService();
+const getInstancesService = new GetInstancesService();
+
+export default new BaseService(
+	getInstancesService.toolName,
+	getInstancesService.description,
+	getInstancesService.getInstancesInput,
+	getInstancesService.getInstancesZodInput,
+	getInstancesService.getInstances,
+);

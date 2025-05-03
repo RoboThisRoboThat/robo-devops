@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateDbClusterService {
 	/**
@@ -187,4 +188,12 @@ class CreateDbClusterService {
 	}
 }
 
-export default new CreateDbClusterService();
+const createDbClusterService = new CreateDbClusterService();
+
+export default new BaseService(
+	createDbClusterService.toolName,
+	createDbClusterService.description,
+	createDbClusterService.createDbClusterInput,
+	createDbClusterService.createDbClusterZodInput,
+	createDbClusterService.createDbCluster,
+);

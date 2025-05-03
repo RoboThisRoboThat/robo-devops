@@ -7,7 +7,8 @@ import {
 	type Subscriber,
 } from "@aws-sdk/client-budgets";
 import { z } from "zod";
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
+import BaseService from "../base.service";
 
 class CreateBudgetService {
 	/**
@@ -222,4 +223,12 @@ class CreateBudgetService {
 	}
 }
 
-export default new CreateBudgetService();
+const createBudgetService = new CreateBudgetService();
+
+export default new BaseService(
+	createBudgetService.toolName,
+	createBudgetService.description,
+	createBudgetService.createBudgetInput,
+	createBudgetService.createBudgetZodInput,
+	createBudgetService.createBudget,
+);

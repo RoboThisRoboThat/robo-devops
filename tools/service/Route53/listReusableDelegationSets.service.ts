@@ -3,6 +3,7 @@ import {
 	ListReusableDelegationSetsCommand,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListReusableDelegationSetsService {
 	/**
@@ -44,4 +45,13 @@ class ListReusableDelegationSetsService {
 	}
 }
 
-export default new ListReusableDelegationSetsService();
+const listReusableDelegationSetsService =
+	new ListReusableDelegationSetsService();
+
+export default new BaseService(
+	listReusableDelegationSetsService.toolName,
+	listReusableDelegationSetsService.description,
+	listReusableDelegationSetsService.listReusableDelegationSetsInput,
+	listReusableDelegationSetsService.listReusableDelegationSetsZodInput,
+	listReusableDelegationSetsService.listReusableDelegationSets,
+);

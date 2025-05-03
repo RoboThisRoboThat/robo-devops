@@ -1,5 +1,6 @@
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteObjectService {
 	/**
@@ -66,4 +67,12 @@ class DeleteObjectService {
 	}
 }
 
-export default new DeleteObjectService();
+const deleteObjectService = new DeleteObjectService();
+
+export default new BaseService(
+	deleteObjectService.toolName,
+	deleteObjectService.description,
+	deleteObjectService.deleteObjectInput,
+	deleteObjectService.deleteObjectZodInput,
+	deleteObjectService.deleteObject,
+);

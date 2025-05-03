@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateReplicationGroupService {
 	/**
@@ -260,4 +261,12 @@ class CreateReplicationGroupService {
 	}
 }
 
-export default new CreateReplicationGroupService();
+const createReplicationGroupService = new CreateReplicationGroupService();
+
+export default new BaseService(
+	createReplicationGroupService.toolName,
+	createReplicationGroupService.description,
+	createReplicationGroupService.createReplicationGroupInput,
+	createReplicationGroupService.createReplicationGroupZodInput,
+	createReplicationGroupService.createReplicationGroup,
+);

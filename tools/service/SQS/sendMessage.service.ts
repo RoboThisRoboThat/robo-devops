@@ -1,5 +1,6 @@
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class SendMessageService {
 	/**
@@ -159,4 +160,12 @@ class SendMessageService {
 	}
 }
 
-export default new SendMessageService();
+const sendMessageService = new SendMessageService();
+
+export default new BaseService(
+	sendMessageService.toolName,
+	sendMessageService.description,
+	sendMessageService.sendMessageInput,
+	sendMessageService.sendMessageZodInput,
+	sendMessageService.sendMessage,
+);

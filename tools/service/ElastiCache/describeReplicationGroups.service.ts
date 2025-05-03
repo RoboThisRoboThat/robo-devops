@@ -3,6 +3,7 @@ import {
 	DescribeReplicationGroupsCommand,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DescribeReplicationGroupsService {
 	/**
@@ -154,4 +155,12 @@ class DescribeReplicationGroupsService {
 	}
 }
 
-export default new DescribeReplicationGroupsService();
+const describeReplicationGroupsService = new DescribeReplicationGroupsService();
+
+export default new BaseService(
+	describeReplicationGroupsService.toolName,
+	describeReplicationGroupsService.description,
+	describeReplicationGroupsService.describeReplicationGroupsInput,
+	describeReplicationGroupsService.describeReplicationGroupsZodInput,
+	describeReplicationGroupsService.describeReplicationGroups,
+);

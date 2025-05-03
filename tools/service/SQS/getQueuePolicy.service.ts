@@ -1,5 +1,6 @@
 import { SQSClient, GetQueueAttributesCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetQueuePolicyService {
 	/**
@@ -65,4 +66,12 @@ class GetQueuePolicyService {
 	}
 }
 
-export default new GetQueuePolicyService();
+const getQueuePolicyService = new GetQueuePolicyService();
+
+export default new BaseService(
+	getQueuePolicyService.toolName,
+	getQueuePolicyService.description,
+	getQueuePolicyService.getQueuePolicyInput,
+	getQueuePolicyService.getQueuePolicyZodInput,
+	getQueuePolicyService.getQueuePolicy,
+);

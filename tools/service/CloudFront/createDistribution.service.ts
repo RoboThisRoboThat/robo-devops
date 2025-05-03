@@ -1,6 +1,9 @@
 import {
 	CloudFrontClient,
 	CreateDistributionCommand,
+	type MinimumProtocolVersion,
+} from "@aws-sdk/client-cloudfront";
+import type {
 	CreateDistributionResult,
 	DistributionConfig,
 	ViewerCertificate,
@@ -10,6 +13,7 @@ import {
 	GeoRestriction,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateDistributionService {
 	/**
@@ -191,63 +195,65 @@ class CreateDistributionService {
 
 	createDistributionZodInput = z.object(this.createDistributionInput);
 
-	async createDistribution({
-		originDomain,
-		originPath,
-		viewerProtocolPolicy = "allow-all",
-		allowedHttpMethods = "GET, HEAD",
-		cachedMethods = "GET, HEAD",
-		forwardQueryString = false,
-		forwardedHeaders,
-		compress = false,
-		priceClass = "PriceClass_100",
-		viewerCertificateMinimumProtocolVersion,
-		viewerCertificateCloudFrontDefaultCertificate = true,
-		viewerCertificateAcmCertificateArn,
-		viewerCertificateSslSupportMethod,
-		loggingEnabled = false,
-		loggingBucket,
-		loggingPrefix,
-		enabled = true,
-		aliases,
-		defaultRootObject,
-		errorPages,
-		restrictionsGeoRestrictionType = "none",
-		restrictionsGeoRestrictionLocations,
-		webAclId,
-		tags,
-	}: {
-		originDomain: string;
-		originPath?: string;
-		viewerProtocolPolicy?: "allow-all" | "https-only" | "redirect-to-https";
-		allowedHttpMethods?: string;
-		cachedMethods?: string;
-		forwardQueryString?: boolean;
-		forwardedHeaders?: string;
-		compress?: boolean;
-		priceClass?: "PriceClass_100" | "PriceClass_200" | "PriceClass_All";
-		viewerCertificateMinimumProtocolVersion?: string;
-		viewerCertificateCloudFrontDefaultCertificate?: boolean;
-		viewerCertificateAcmCertificateArn?: string;
-		viewerCertificateSslSupportMethod?: "sni-only" | "vip" | "static-ip";
-		loggingEnabled?: boolean;
-		loggingBucket?: string;
-		loggingPrefix?: string;
-		enabled?: boolean;
-		aliases?: string;
-		defaultRootObject?: string;
-		errorPages?: string;
-		restrictionsGeoRestrictionType?: "blacklist" | "whitelist" | "none";
-		restrictionsGeoRestrictionLocations?: string;
-		webAclId?: string;
-		tags?: Record<string, string>;
-	}): Promise<{
+	async createDistribution(params: Record<string, unknown>): Promise<{
 		distributionId: string;
 		domainName: string;
 		etag: string;
 		location: string;
 		status: string;
 	}> {
+		const {
+			originDomain,
+			originPath,
+			viewerProtocolPolicy = "allow-all",
+			allowedHttpMethods = "GET, HEAD",
+			cachedMethods = "GET, HEAD",
+			forwardQueryString = false,
+			forwardedHeaders,
+			compress = false,
+			priceClass = "PriceClass_100",
+			viewerCertificateMinimumProtocolVersion,
+			viewerCertificateCloudFrontDefaultCertificate = true,
+			viewerCertificateAcmCertificateArn,
+			viewerCertificateSslSupportMethod,
+			loggingEnabled = false,
+			loggingBucket,
+			loggingPrefix,
+			enabled = true,
+			aliases,
+			defaultRootObject,
+			errorPages,
+			restrictionsGeoRestrictionType = "none",
+			restrictionsGeoRestrictionLocations,
+			webAclId,
+			tags,
+		} = params as {
+			originDomain: string;
+			originPath?: string;
+			viewerProtocolPolicy?: "allow-all" | "https-only" | "redirect-to-https";
+			allowedHttpMethods?: string;
+			cachedMethods?: string;
+			forwardQueryString?: boolean;
+			forwardedHeaders?: string;
+			compress?: boolean;
+			priceClass?: "PriceClass_100" | "PriceClass_200" | "PriceClass_All";
+			viewerCertificateMinimumProtocolVersion?: string;
+			viewerCertificateCloudFrontDefaultCertificate?: boolean;
+			viewerCertificateAcmCertificateArn?: string;
+			viewerCertificateSslSupportMethod?: "sni-only" | "vip" | "static-ip";
+			loggingEnabled?: boolean;
+			loggingBucket?: string;
+			loggingPrefix?: string;
+			enabled?: boolean;
+			aliases?: string;
+			defaultRootObject?: string;
+			errorPages?: string;
+			restrictionsGeoRestrictionType?: "blacklist" | "whitelist" | "none";
+			restrictionsGeoRestrictionLocations?: string;
+			webAclId?: string;
+			tags?: Record<string, string>;
+		};
+
 		try {
 			// Parse string inputs that should be arrays
 			const allowedMethodsArray = allowedHttpMethods
@@ -435,4 +441,12 @@ class CreateDistributionService {
 	}
 }
 
-export default new CreateDistributionService();
+const createDistributionService = new CreateDistributionService();
+
+export default new BaseService(
+	createDistributionService.toolName,
+	createDistributionService.description,
+	createDistributionService.createDistributionInput,
+	createDistributionService.createDistributionZodInput,
+	createDistributionService.createDistribution.bind(createDistributionService),
+);

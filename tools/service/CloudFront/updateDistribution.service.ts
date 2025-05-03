@@ -6,6 +6,7 @@ import {
 	type GetDistributionConfigCommandOutput,
 } from "@aws-sdk/client-cloudfront";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class UpdateDistributionService {
 	/**
@@ -136,64 +137,66 @@ class UpdateDistributionService {
 
 	updateDistributionZodInput = z.object(this.updateDistributionInput);
 
-	async updateDistribution({
-		distributionId,
-		ifMatch,
-		originDomain,
-		originPath,
-		viewerProtocolPolicy,
-		allowedHttpMethods,
-		cachedMethods,
-		forwardQueryString,
-		forwardedHeaders,
-		compress,
-		priceClass,
-		viewerCertificateMinimumProtocolVersion,
-		viewerCertificateCloudFrontDefaultCertificate,
-		viewerCertificateAcmCertificateArn,
-		viewerCertificateSslSupportMethod,
-		loggingEnabled,
-		loggingBucket,
-		loggingPrefix,
-		enabled,
-		aliases,
-		defaultRootObject,
-		errorPages,
-		restrictionsGeoRestrictionType,
-		restrictionsGeoRestrictionLocations,
-		webAclId,
-	}: {
-		distributionId: string;
-		ifMatch: string;
-		originDomain?: string;
-		originPath?: string;
-		viewerProtocolPolicy?: "allow-all" | "https-only" | "redirect-to-https";
-		allowedHttpMethods?: string;
-		cachedMethods?: string;
-		forwardQueryString?: boolean;
-		forwardedHeaders?: string;
-		compress?: boolean;
-		priceClass?: "PriceClass_100" | "PriceClass_200" | "PriceClass_All";
-		viewerCertificateMinimumProtocolVersion?: string;
-		viewerCertificateCloudFrontDefaultCertificate?: boolean;
-		viewerCertificateAcmCertificateArn?: string;
-		viewerCertificateSslSupportMethod?: "sni-only" | "vip" | "static-ip";
-		loggingEnabled?: boolean;
-		loggingBucket?: string;
-		loggingPrefix?: string;
-		enabled?: boolean;
-		aliases?: string;
-		defaultRootObject?: string;
-		errorPages?: string;
-		restrictionsGeoRestrictionType?: "blacklist" | "whitelist" | "none";
-		restrictionsGeoRestrictionLocations?: string;
-		webAclId?: string;
-	}): Promise<{
+	async updateDistribution(params: Record<string, unknown>): Promise<{
 		distributionId: string;
 		domainName: string;
 		etag: string;
 		status: string;
 	}> {
+		const {
+			distributionId,
+			ifMatch,
+			originDomain,
+			originPath,
+			viewerProtocolPolicy,
+			allowedHttpMethods,
+			cachedMethods,
+			forwardQueryString,
+			forwardedHeaders,
+			compress,
+			priceClass,
+			viewerCertificateMinimumProtocolVersion,
+			viewerCertificateCloudFrontDefaultCertificate,
+			viewerCertificateAcmCertificateArn,
+			viewerCertificateSslSupportMethod,
+			loggingEnabled,
+			loggingBucket,
+			loggingPrefix,
+			enabled,
+			aliases,
+			defaultRootObject,
+			errorPages,
+			restrictionsGeoRestrictionType,
+			restrictionsGeoRestrictionLocations,
+			webAclId,
+		} = params as {
+			distributionId: string;
+			ifMatch: string;
+			originDomain?: string;
+			originPath?: string;
+			viewerProtocolPolicy?: "allow-all" | "https-only" | "redirect-to-https";
+			allowedHttpMethods?: string;
+			cachedMethods?: string;
+			forwardQueryString?: boolean;
+			forwardedHeaders?: string;
+			compress?: boolean;
+			priceClass?: "PriceClass_100" | "PriceClass_200" | "PriceClass_All";
+			viewerCertificateMinimumProtocolVersion?: string;
+			viewerCertificateCloudFrontDefaultCertificate?: boolean;
+			viewerCertificateAcmCertificateArn?: string;
+			viewerCertificateSslSupportMethod?: "sni-only" | "vip" | "static-ip";
+			loggingEnabled?: boolean;
+			loggingBucket?: string;
+			loggingPrefix?: string;
+			enabled?: boolean;
+			aliases?: string;
+			defaultRootObject?: string;
+			errorPages?: string;
+			restrictionsGeoRestrictionType?: "blacklist" | "whitelist" | "none";
+			restrictionsGeoRestrictionLocations?: string;
+			webAclId?: string;
+		};
+
 		try {
 			// Create CloudFront client
 			const client = new CloudFrontClient({});
@@ -494,4 +497,12 @@ class UpdateDistributionService {
 	}
 }
 
-export default new UpdateDistributionService();
+const updateDistributionService = new UpdateDistributionService();
+
+export default new BaseService(
+	updateDistributionService.toolName,
+	updateDistributionService.description,
+	updateDistributionService.updateDistributionInput,
+	updateDistributionService.updateDistributionZodInput,
+	updateDistributionService.updateDistribution.bind(updateDistributionService),
+);

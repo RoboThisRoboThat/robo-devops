@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateSnapshotService {
 	/**
@@ -44,14 +45,8 @@ class CreateSnapshotService {
 
 	createSnapshotZodInput = z
 		.object(this.createSnapshotInput)
-		.refine(
-			(data) =>
-				(!!data.cacheClusterId || !!data.replicationGroupId) &&
-				!(!!data.cacheClusterId && !!data.replicationGroupId),
-			{
-				message:
-					"Exactly one of cacheClusterId or replicationGroupId must be provided",
-			},
+		.describe(
+			"Exactly one of cacheClusterId or replicationGroupId must be provided",
 		);
 
 	async createSnapshot({
@@ -135,4 +130,12 @@ class CreateSnapshotService {
 	}
 }
 
-export default new CreateSnapshotService();
+const createSnapshotService = new CreateSnapshotService();
+
+export default new BaseService(
+	createSnapshotService.toolName,
+	createSnapshotService.description,
+	createSnapshotService.createSnapshotInput,
+	createSnapshotService.createSnapshotZodInput,
+	createSnapshotService.createSnapshot,
+);

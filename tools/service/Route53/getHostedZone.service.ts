@@ -1,5 +1,6 @@
 import { Route53Client, GetHostedZoneCommand } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetHostedZoneService {
 	/**
@@ -54,4 +55,12 @@ class GetHostedZoneService {
 	}
 }
 
-export default new GetHostedZoneService();
+const getHostedZoneService = new GetHostedZoneService();
+
+export default new BaseService(
+	getHostedZoneService.toolName,
+	getHostedZoneService.description,
+	getHostedZoneService.getHostedZoneInput,
+	getHostedZoneService.getHostedZoneZodInput,
+	getHostedZoneService.getHostedZone,
+);

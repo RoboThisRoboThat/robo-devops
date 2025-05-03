@@ -1,5 +1,6 @@
 import { RDSClient, DeleteDBInstanceCommand } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteDbInstanceService {
 	/**
@@ -85,4 +86,12 @@ class DeleteDbInstanceService {
 	}
 }
 
-export default new DeleteDbInstanceService();
+const deleteDbInstanceService = new DeleteDbInstanceService();
+
+export default new BaseService(
+	deleteDbInstanceService.toolName,
+	deleteDbInstanceService.description,
+	deleteDbInstanceService.deleteDbInstanceInput,
+	deleteDbInstanceService.deleteDbInstanceZodInput,
+	deleteDbInstanceService.deleteDbInstance,
+);

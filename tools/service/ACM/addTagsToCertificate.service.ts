@@ -1,6 +1,6 @@
 import { ACMClient, AddTagsToCertificateCommand } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class AddTagsToCertificateService {
 	/**
 	 * Adds one or more tags to an ACM certificate
@@ -69,4 +69,12 @@ class AddTagsToCertificateService {
 	}
 }
 
-export default new AddTagsToCertificateService();
+const addTagsToCertificateService = new AddTagsToCertificateService();
+
+export default new BaseService(
+	addTagsToCertificateService.toolName,
+	addTagsToCertificateService.description,
+	addTagsToCertificateService.addTagsToCertificateInput,
+	addTagsToCertificateService.addTagsToCertificateZodInput,
+	addTagsToCertificateService.addTagsToCertificate,
+);

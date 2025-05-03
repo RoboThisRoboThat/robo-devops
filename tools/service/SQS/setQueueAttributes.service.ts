@@ -1,5 +1,6 @@
 import { SQSClient, SetQueueAttributesCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class SetQueueAttributesService {
 	/**
@@ -80,4 +81,12 @@ class SetQueueAttributesService {
 	}
 }
 
-export default new SetQueueAttributesService();
+const setQueueAttributesService = new SetQueueAttributesService();
+
+export default new BaseService(
+	setQueueAttributesService.toolName,
+	setQueueAttributesService.description,
+	setQueueAttributesService.setQueueAttributesInput,
+	setQueueAttributesService.setQueueAttributesZodInput,
+	setQueueAttributesService.setQueueAttributes,
+);

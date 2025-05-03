@@ -1,93 +1,24 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import GetInstancesService from "tools/service/EC2/getInstances.service";
-import LaunchInstanceService from "tools/service/EC2/launchInstance.service";
-// Import RDS Services
-import ListDbInstancesService from "tools/service/RDS/listDbInstances.service";
-import DescribeDbInstanceService from "tools/service/RDS/describeDbInstance.service";
-import CreateDbInstanceService from "tools/service/RDS/createDbInstance.service";
-import DeleteDbInstanceService from "tools/service/RDS/deleteDbInstance.service";
-import ListDbClustersService from "tools/service/RDS/listDbClusters.service";
-import DescribeDbClusterService from "tools/service/RDS/describeDbCluster.service";
-import CreateDbClusterService from "tools/service/RDS/createDbCluster.service";
-import DeleteDbClusterService from "tools/service/RDS/deleteDbCluster.service";
-import CreateDbClusterSnapshotService from "tools/service/RDS/createDbClusterSnapshot.service";
-import RestoreDbClusterFromSnapshotService from "tools/service/RDS/restoreDbClusterFromSnapshot.service";
-import CreateDbSnapshotService from "tools/service/RDS/createDbSnapshot.service";
-import RestoreDbInstanceFromDbSnapshotService from "tools/service/RDS/restoreDbInstanceFromDbSnapshot.service";
+
+import tools from "tools";
+
+const toolObject: Record<string, any> = {};
 
 const server = new McpServer({
 	name: "aws-devops",
 	version: "1.0.0",
 	capabilities: {
 		resources: {},
-		tools: {
-			[GetInstancesService.toolName]: {
-				description: GetInstancesService.description,
-				parameters: GetInstancesService.getInstancesInput,
-			},
-			[LaunchInstanceService.toolName]: {
-				description: LaunchInstanceService.description,
-				parameters: LaunchInstanceService.launchInstanceInput,
-			},
-			// RDS Tools
-			[ListDbInstancesService.toolName]: {
-				description: ListDbInstancesService.description,
-				parameters: ListDbInstancesService.listDbInstancesInput,
-			},
-			[DescribeDbInstanceService.toolName]: {
-				description: DescribeDbInstanceService.description,
-				parameters: DescribeDbInstanceService.describeDbInstanceInput,
-			},
-			[CreateDbInstanceService.toolName]: {
-				description: CreateDbInstanceService.description,
-				parameters: CreateDbInstanceService.createDbInstanceInput,
-			},
-			[DeleteDbInstanceService.toolName]: {
-				description: DeleteDbInstanceService.description,
-				parameters: DeleteDbInstanceService.deleteDbInstanceInput,
-			},
-			[ListDbClustersService.toolName]: {
-				description: ListDbClustersService.description,
-				parameters: ListDbClustersService.listDbClustersInput,
-			},
-			[DescribeDbClusterService.toolName]: {
-				description: DescribeDbClusterService.description,
-				parameters: DescribeDbClusterService.describeDbClusterInput,
-			},
-			[CreateDbClusterService.toolName]: {
-				description: CreateDbClusterService.description,
-				parameters: CreateDbClusterService.createDbClusterInput,
-			},
-			[DeleteDbClusterService.toolName]: {
-				description: DeleteDbClusterService.description,
-				parameters: DeleteDbClusterService.deleteDbClusterInput,
-			},
-			[CreateDbClusterSnapshotService.toolName]: {
-				description: CreateDbClusterSnapshotService.description,
-				parameters: CreateDbClusterSnapshotService.createDbClusterSnapshotInput,
-			},
-			[RestoreDbClusterFromSnapshotService.toolName]: {
-				description: RestoreDbClusterFromSnapshotService.description,
-				parameters:
-					RestoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshotInput,
-			},
-			[CreateDbSnapshotService.toolName]: {
-				description: CreateDbSnapshotService.description,
-				parameters: CreateDbSnapshotService.createDbSnapshotInput,
-			},
-			[RestoreDbInstanceFromDbSnapshotService.toolName]: {
-				description: RestoreDbInstanceFromDbSnapshotService.description,
-				parameters:
-					RestoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshotInput,
-			},
-		},
+		tools: {},
 	},
 });
+
+// EC2 Tools
 server.tool(
-	"get-ec2-instances",
-	"Get EC2 instances from a specific AWS region with flexible filtering options",
-	GetInstancesService.getInstancesInput,
+	getInstancesService.toolName,
+	getInstancesService.description,
+	getInstancesService.getInstancesInput,
 	async ({
 		region,
 		filters = [],
@@ -95,7 +26,7 @@ server.tool(
 		includeStoppedInstances = false,
 	}) => {
 		try {
-			const instances = await GetInstancesService.getInstances({
+			const instances = await getInstancesService.getInstances({
 				region,
 				filters,
 				nameFilter,
@@ -136,10 +67,11 @@ server.tool(
 		}
 	},
 );
+
 server.tool(
-	"launch-ec2-instance",
-	"Launch a new EC2 instance in a specific AWS region with smart defaults",
-	LaunchInstanceService.launchInstanceInput,
+	launchInstanceService.toolName,
+	launchInstanceService.description,
+	launchInstanceService.launchInstanceInput,
 	async ({
 		region,
 		imageId,
@@ -151,7 +83,7 @@ server.tool(
 		createDefaultSecurityGroup = true,
 	}) => {
 		try {
-			const instance = await LaunchInstanceService.launchInstance({
+			const instance = await launchInstanceService.launchInstance({
 				region,
 				imageId,
 				instanceType,
@@ -186,14 +118,14 @@ server.tool(
 	},
 );
 
-// Add RDS Tool Registrations
+// RDS Tool Registrations
 server.tool(
-	"list-db-instances",
-	"Retrieves and displays a detailed list of RDS DB instances",
-	ListDbInstancesService.listDbInstancesInput,
+	listDbInstancesService.toolName,
+	listDbInstancesService.description,
+	listDbInstancesService.listDbInstancesInput,
 	async ({ region, outputFormat = "text" }) => {
 		try {
-			const result = await ListDbInstancesService.listDbInstances({
+			const result = await listDbInstancesService.listDbInstances({
 				region,
 				outputFormat,
 			});
@@ -223,12 +155,12 @@ server.tool(
 );
 
 server.tool(
-	"describe-db-instance",
-	"Displays detailed information about a specific RDS DB instance",
-	DescribeDbInstanceService.describeDbInstanceInput,
+	describeDbInstanceService.toolName,
+	describeDbInstanceService.description,
+	describeDbInstanceService.describeDbInstanceInput,
 	async ({ region, dbInstanceIdentifier, outputFormat = "text" }) => {
 		try {
-			const result = await DescribeDbInstanceService.describeDbInstance({
+			const result = await describeDbInstanceService.describeDbInstance({
 				region,
 				dbInstanceIdentifier,
 				outputFormat,
@@ -262,12 +194,12 @@ server.tool(
 );
 
 server.tool(
-	"create-db-instance",
-	"Creates a new RDS DB instance with specified configurations",
-	CreateDbInstanceService.createDbInstanceInput,
+	createDbInstanceService.toolName,
+	createDbInstanceService.description,
+	createDbInstanceService.createDbInstanceInput,
 	async (params) => {
 		try {
-			const result = await CreateDbInstanceService.createDbInstance(params);
+			const result = await createDbInstanceService.createDbInstance(params);
 
 			return {
 				content: [
@@ -294,9 +226,9 @@ server.tool(
 );
 
 server.tool(
-	"delete-db-instance",
-	"Deletes a specified RDS DB instance",
-	DeleteDbInstanceService.deleteDbInstanceInput,
+	deleteDbInstanceService.toolName,
+	deleteDbInstanceService.description,
+	deleteDbInstanceService.deleteDbInstanceInput,
 	async ({
 		region,
 		dbInstanceIdentifier,
@@ -304,7 +236,7 @@ server.tool(
 		skipFinalSnapshot = false,
 	}) => {
 		try {
-			const result = await DeleteDbInstanceService.deleteDbInstance({
+			const result = await deleteDbInstanceService.deleteDbInstance({
 				region,
 				dbInstanceIdentifier,
 				finalDbSnapshotIdentifier,
@@ -339,12 +271,12 @@ server.tool(
 );
 
 server.tool(
-	"list-db-clusters",
-	"Retrieves and displays a detailed list of RDS DB clusters (Aurora)",
-	ListDbClustersService.listDbClustersInput,
+	listDbClustersService.toolName,
+	listDbClustersService.description,
+	listDbClustersService.listDbClustersInput,
 	async ({ region, outputFormat = "text" }) => {
 		try {
-			const result = await ListDbClustersService.listDbClusters({
+			const result = await listDbClustersService.listDbClusters({
 				region,
 				outputFormat,
 			});
@@ -374,12 +306,12 @@ server.tool(
 );
 
 server.tool(
-	"describe-db-cluster",
-	"Displays detailed information about a specific RDS DB cluster (Aurora)",
-	DescribeDbClusterService.describeDbClusterInput,
+	describeDbClusterService.toolName,
+	describeDbClusterService.description,
+	describeDbClusterService.describeDbClusterInput,
 	async ({ region, dbClusterIdentifier, outputFormat = "text" }) => {
 		try {
-			const result = await DescribeDbClusterService.describeDbCluster({
+			const result = await describeDbClusterService.describeDbCluster({
 				region,
 				dbClusterIdentifier,
 				outputFormat,
@@ -413,12 +345,12 @@ server.tool(
 );
 
 server.tool(
-	"create-db-cluster",
-	"Creates a new RDS DB cluster (Aurora) with specified configurations",
-	CreateDbClusterService.createDbClusterInput,
+	createDbClusterService.toolName,
+	createDbClusterService.description,
+	createDbClusterService.createDbClusterInput,
 	async (params) => {
 		try {
-			const result = await CreateDbClusterService.createDbCluster(params);
+			const result = await createDbClusterService.createDbCluster(params);
 
 			return {
 				content: [
@@ -445,9 +377,9 @@ server.tool(
 );
 
 server.tool(
-	"delete-db-cluster",
-	"Deletes a specified RDS DB cluster (Aurora)",
-	DeleteDbClusterService.deleteDbClusterInput,
+	deleteDbClusterService.toolName,
+	deleteDbClusterService.description,
+	deleteDbClusterService.deleteDbClusterInput,
 	async ({
 		region,
 		dbClusterIdentifier,
@@ -455,7 +387,7 @@ server.tool(
 		skipFinalSnapshot = false,
 	}) => {
 		try {
-			const result = await DeleteDbClusterService.deleteDbCluster({
+			const result = await deleteDbClusterService.deleteDbCluster({
 				region,
 				dbClusterIdentifier,
 				finalDbClusterSnapshotIdentifier,
@@ -490,13 +422,13 @@ server.tool(
 );
 
 server.tool(
-	"create-db-cluster-snapshot",
-	"Creates a snapshot of a specified RDS DB cluster (Aurora)",
-	CreateDbClusterSnapshotService.createDbClusterSnapshotInput,
+	createDbClusterSnapshotService.toolName,
+	createDbClusterSnapshotService.description,
+	createDbClusterSnapshotService.createDbClusterSnapshotInput,
 	async ({ region, dbClusterIdentifier, dbClusterSnapshotIdentifier }) => {
 		try {
 			const result =
-				await CreateDbClusterSnapshotService.createDbClusterSnapshot({
+				await createDbClusterSnapshotService.createDbClusterSnapshot({
 					region,
 					dbClusterIdentifier,
 					dbClusterSnapshotIdentifier,
@@ -530,9 +462,9 @@ server.tool(
 );
 
 server.tool(
-	"restore-db-cluster-from-snapshot",
-	"Restores an RDS DB cluster (Aurora) from a snapshot",
-	RestoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshotInput,
+	restoreDbClusterFromSnapshotService.toolName,
+	restoreDbClusterFromSnapshotService.description,
+	restoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshotInput,
 	async ({
 		region,
 		dbClusterIdentifier,
@@ -543,7 +475,7 @@ server.tool(
 	}) => {
 		try {
 			const result =
-				await RestoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshot({
+				await restoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshot({
 					region,
 					dbClusterIdentifier,
 					dbClusterSnapshotIdentifier,
@@ -580,12 +512,12 @@ server.tool(
 );
 
 server.tool(
-	"create-db-snapshot",
-	"Creates a snapshot of a specified RDS DB instance",
-	CreateDbSnapshotService.createDbSnapshotInput,
+	createDbSnapshotService.toolName,
+	createDbSnapshotService.description,
+	createDbSnapshotService.createDbSnapshotInput,
 	async ({ region, dbInstanceIdentifier, dbSnapshotIdentifier, tags }) => {
 		try {
-			const result = await CreateDbSnapshotService.createDbSnapshot({
+			const result = await createDbSnapshotService.createDbSnapshot({
 				region,
 				dbInstanceIdentifier,
 				dbSnapshotIdentifier,
@@ -620,13 +552,13 @@ server.tool(
 );
 
 server.tool(
-	"restore-db-instance-from-db-snapshot",
-	"Restores an RDS DB instance from a snapshot",
-	RestoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshotInput,
+	restoreDbInstanceFromDbSnapshotService.toolName,
+	restoreDbInstanceFromDbSnapshotService.description,
+	restoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshotInput,
 	async (params) => {
 		try {
 			const result =
-				await RestoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshot(
+				await restoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshot(
 					params,
 				);
 
@@ -639,7 +571,6 @@ server.tool(
 				],
 			};
 		} catch (error) {
-			console.error(`Error restoring RDS DB instance from snapshot:`, error);
 			return {
 				content: [
 					{
@@ -653,6 +584,194 @@ server.tool(
 		}
 	},
 );
+
+// Add ElastiCache Tool Registrations
+server.tool(
+	describeCacheClustersService.toolName,
+	describeCacheClustersService.description,
+	describeCacheClustersService.describeCacheClustersInput,
+	async ({
+		region,
+		cacheClusterId,
+		showCacheNodeInfo = false,
+		outputFormat,
+	}) => {
+		try {
+			const result = await describeCacheClustersService.describeCacheClusters({
+				region,
+				cacheClusterId,
+				showCacheNodeInfo,
+				outputFormat,
+			});
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify(result),
+					},
+				],
+			};
+		} catch (error) {
+			console.error("Error describing ElastiCache clusters:", error);
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify({
+							error: error instanceof Error ? error.message : String(error),
+						}),
+					},
+				],
+			};
+		}
+	},
+);
+
+server.tool(
+	createCacheClusterService.toolName,
+	createCacheClusterService.description,
+	createCacheClusterService.createCacheClusterInput,
+	async (params) => {
+		try {
+			const result = await createCacheClusterService.createCacheCluster(params);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify(result),
+					},
+				],
+			};
+		} catch (error) {
+			console.error(`Error creating ElastiCache cluster:`, error);
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify({
+							error: error instanceof Error ? error.message : String(error),
+						}),
+					},
+				],
+			};
+		}
+	},
+);
+
+server.tool(
+	deleteCacheClusterService.toolName,
+	deleteCacheClusterService.description,
+	deleteCacheClusterService.deleteCacheClusterInput,
+	async ({ region, cacheClusterId, finalSnapshotIdentifier }) => {
+		try {
+			const result = await deleteCacheClusterService.deleteCacheCluster({
+				region,
+				cacheClusterId,
+				finalSnapshotIdentifier,
+			});
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify(result),
+					},
+				],
+			};
+		} catch (error) {
+			console.error(
+				`Error deleting ElastiCache cluster ${cacheClusterId}:`,
+				error,
+			);
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify({
+							error: error instanceof Error ? error.message : String(error),
+						}),
+					},
+				],
+			};
+		}
+	},
+);
+
+// Route53 tools
+server.tool(
+	listHostedZonesService.toolName,
+	listHostedZonesService.description,
+	listHostedZonesService.listHostedZonesInput,
+	async ({ outputFormat }) => {
+		try {
+			const result = await listHostedZonesService.listHostedZones({
+				outputFormat,
+			});
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify(result),
+					},
+				],
+			};
+		} catch (error) {
+			console.error("Error listing Route53 hosted zones:", error);
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify({
+							error: error instanceof Error ? error.message : String(error),
+						}),
+					},
+				],
+			};
+		}
+	},
+);
+
+// S3 tools
+server.tool(
+	listBucketsService.toolName,
+	listBucketsService.description,
+	listBucketsService.listBucketsInput,
+	async ({ outputFormat }) => {
+		try {
+			const result = await listBucketsService.listBuckets({
+				outputFormat,
+			});
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify(result),
+					},
+				],
+			};
+		} catch (error) {
+			console.error("Error listing S3 buckets:", error);
+			return {
+				content: [
+					{
+						type: "text",
+						text: JSON.stringify({
+							error: error instanceof Error ? error.message : String(error),
+						}),
+					},
+				],
+			};
+		}
+	},
+);
+
+// Add SQS tools, continue with other services...
+
+// Continue adding tool registrations for all remaining services...
 
 async function main() {
 	const transport = new StdioServerTransport();

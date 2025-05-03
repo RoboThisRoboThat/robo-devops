@@ -2,6 +2,7 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import fs from "node:fs";
 import type { Readable } from "node:stream";
+import BaseService from "../base.service";
 
 class DownloadFileService {
 	/**
@@ -86,4 +87,12 @@ class DownloadFileService {
 	}
 }
 
-export default new DownloadFileService();
+const downloadFileService = new DownloadFileService();
+
+export default new BaseService(
+	downloadFileService.toolName,
+	downloadFileService.description,
+	downloadFileService.downloadFileInput,
+	downloadFileService.downloadFileZodInput,
+	downloadFileService.downloadFile,
+);

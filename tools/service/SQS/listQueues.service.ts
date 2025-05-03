@@ -1,5 +1,6 @@
 import { SQSClient, ListQueuesCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListQueuesService {
 	/**
@@ -66,4 +67,12 @@ class ListQueuesService {
 	}
 }
 
-export default new ListQueuesService();
+const listQueuesService = new ListQueuesService();
+
+export default new BaseService(
+	listQueuesService.toolName,
+	listQueuesService.description,
+	listQueuesService.listQueuesInput,
+	listQueuesService.listQueuesZodInput,
+	listQueuesService.listQueues,
+);

@@ -1,5 +1,6 @@
 import { SQSClient, PurgeQueueCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class PurgeQueueService {
 	/**
@@ -48,4 +49,12 @@ class PurgeQueueService {
 	}
 }
 
-export default new PurgeQueueService();
+const purgeQueueService = new PurgeQueueService();
+
+export default new BaseService(
+	purgeQueueService.toolName,
+	purgeQueueService.description,
+	purgeQueueService.purgeQueueInput,
+	purgeQueueService.purgeQueueZodInput,
+	purgeQueueService.purgeQueue,
+);

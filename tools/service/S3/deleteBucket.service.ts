@@ -1,5 +1,6 @@
 import { S3Client, DeleteBucketCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteBucketService {
 	/**
@@ -23,13 +24,12 @@ class DeleteBucketService {
 
 	deleteBucketZodInput = z.object(this.deleteBucketInput);
 
-	async deleteBucket({
-		bucketName,
-		region,
-	}: {
-		bucketName: string;
-		region?: string;
-	}) {
+	async deleteBucket(params: Record<string, unknown>) {
+		const { bucketName, region } = params as {
+			bucketName: string;
+			region?: string;
+		};
+
 		try {
 			// Create a new S3 client with the region if specified
 			const clientConfig = region ? { region } : {};
@@ -54,4 +54,12 @@ class DeleteBucketService {
 	}
 }
 
-export default new DeleteBucketService();
+const deleteBucketService = new DeleteBucketService();
+
+export default new BaseService(
+	deleteBucketService.toolName,
+	deleteBucketService.description,
+	deleteBucketService.deleteBucketInput,
+	deleteBucketService.deleteBucketZodInput,
+	deleteBucketService.deleteBucket,
+);

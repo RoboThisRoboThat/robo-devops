@@ -1,6 +1,6 @@
 import { ACMClient, DescribeCertificateCommand } from "@aws-sdk/client-acm";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class DescribeCertificateService {
 	/**
 	 * Displays detailed information about a specific ACM certificate
@@ -59,4 +59,12 @@ class DescribeCertificateService {
 	}
 }
 
-export default new DescribeCertificateService();
+const describeCertificateService = new DescribeCertificateService();
+
+export default new BaseService(
+	describeCertificateService.toolName,
+	describeCertificateService.description,
+	describeCertificateService.describeCertificateInput,
+	describeCertificateService.describeCertificateZodInput,
+	describeCertificateService.describeCertificate,
+);

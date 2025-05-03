@@ -1,9 +1,10 @@
 import {
 	CostExplorerClient,
 	GetCostAndUsageCommand,
-	GroupDefinition,
+	type GroupDefinition,
 } from "@aws-sdk/client-cost-explorer";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetCostAndUsageService {
 	/**
@@ -132,4 +133,12 @@ class GetCostAndUsageService {
 	}
 }
 
-export default new GetCostAndUsageService();
+const getCostAndUsageService = new GetCostAndUsageService();
+
+export default new BaseService(
+	getCostAndUsageService.toolName,
+	getCostAndUsageService.description,
+	getCostAndUsageService.getCostAndUsageInput,
+	getCostAndUsageService.getCostAndUsageZodInput,
+	getCostAndUsageService.getCostAndUsage,
+);

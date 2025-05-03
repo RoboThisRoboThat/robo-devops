@@ -7,7 +7,7 @@ import {
 	type NotificationWithSubscribers,
 } from "@aws-sdk/client-budgets";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class UpdateBudgetService {
 	/**
 	 * Updates an existing AWS budget
@@ -273,4 +273,12 @@ class UpdateBudgetService {
 	}
 }
 
-export default new UpdateBudgetService();
+const updateBudgetService = new UpdateBudgetService();
+
+export default new BaseService(
+	updateBudgetService.toolName,
+	updateBudgetService.description,
+	updateBudgetService.updateBudgetInput,
+	updateBudgetService.updateBudgetZodInput,
+	updateBudgetService.updateBudget,
+);

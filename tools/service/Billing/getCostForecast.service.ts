@@ -4,7 +4,7 @@ import {
 	type MetricValue,
 } from "@aws-sdk/client-cost-explorer";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class GetCostForecastService {
 	/**
 	 * Retrieves a cost forecast using AWS Cost Explorer
@@ -121,4 +121,12 @@ class GetCostForecastService {
 	}
 }
 
-export default new GetCostForecastService();
+const getCostForecastService = new GetCostForecastService();
+
+export default new BaseService(
+	getCostForecastService.toolName,
+	getCostForecastService.description,
+	getCostForecastService.getCostForecastInput,
+	getCostForecastService.getCostForecastZodInput,
+	getCostForecastService.getCostForecast,
+);

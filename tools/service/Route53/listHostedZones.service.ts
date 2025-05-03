@@ -4,6 +4,7 @@ import {
 	type HostedZone,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListHostedZonesService {
 	/**
@@ -49,4 +50,12 @@ class ListHostedZonesService {
 	}
 }
 
-export default new ListHostedZonesService();
+const listHostedZonesService = new ListHostedZonesService();
+
+export default new BaseService(
+	listHostedZonesService.toolName,
+	listHostedZonesService.description,
+	listHostedZonesService.listHostedZonesInput,
+	listHostedZonesService.listHostedZonesZodInput,
+	listHostedZonesService.listHostedZones,
+);

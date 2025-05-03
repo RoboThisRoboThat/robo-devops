@@ -1,5 +1,6 @@
 import { RDSClient, DeleteDBClusterCommand } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteDbClusterService {
 	/**
@@ -85,4 +86,12 @@ class DeleteDbClusterService {
 	}
 }
 
-export default new DeleteDbClusterService();
+const deleteDbClusterService = new DeleteDbClusterService();
+
+export default new BaseService(
+	deleteDbClusterService.toolName,
+	deleteDbClusterService.description,
+	deleteDbClusterService.deleteDbClusterInput,
+	deleteDbClusterService.deleteDbClusterZodInput,
+	deleteDbClusterService.deleteDbCluster,
+);

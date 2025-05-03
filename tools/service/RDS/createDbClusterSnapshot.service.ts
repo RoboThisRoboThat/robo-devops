@@ -1,5 +1,6 @@
 import { RDSClient, CreateDBClusterSnapshotCommand } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateDbClusterSnapshotService {
 	/**
@@ -62,4 +63,12 @@ class CreateDbClusterSnapshotService {
 	}
 }
 
-export default new CreateDbClusterSnapshotService();
+const createDbClusterSnapshotService = new CreateDbClusterSnapshotService();
+
+export default new BaseService(
+	createDbClusterSnapshotService.toolName,
+	createDbClusterSnapshotService.description,
+	createDbClusterSnapshotService.createDbClusterSnapshotInput,
+	createDbClusterSnapshotService.createDbClusterSnapshotZodInput,
+	createDbClusterSnapshotService.createDbClusterSnapshot,
+);

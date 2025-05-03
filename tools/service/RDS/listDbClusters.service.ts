@@ -1,5 +1,6 @@
 import { RDSClient, DescribeDBClustersCommand } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ListDbClustersService {
 	/**
@@ -65,4 +66,12 @@ class ListDbClustersService {
 	}
 }
 
-export default new ListDbClustersService();
+const listDbClustersService = new ListDbClustersService();
+
+export default new BaseService(
+	listDbClustersService.toolName,
+	listDbClustersService.description,
+	listDbClustersService.listDbClustersInput,
+	listDbClustersService.listDbClustersZodInput,
+	listDbClustersService.listDbClusters,
+);

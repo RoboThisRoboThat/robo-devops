@@ -3,6 +3,7 @@ import {
 	DeleteHostedZoneCommand,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteHostedZoneService {
 	/**
@@ -47,4 +48,12 @@ class DeleteHostedZoneService {
 	}
 }
 
-export default new DeleteHostedZoneService();
+const deleteHostedZoneService = new DeleteHostedZoneService();
+
+export default new BaseService(
+	deleteHostedZoneService.toolName,
+	deleteHostedZoneService.description,
+	deleteHostedZoneService.deleteHostedZoneInput,
+	deleteHostedZoneService.deleteHostedZoneZodInput,
+	deleteHostedZoneService.deleteHostedZone,
+);

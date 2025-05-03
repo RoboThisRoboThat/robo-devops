@@ -3,6 +3,7 @@ import {
 	CreateHostedZoneCommand,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class CreateHostedZoneService {
 	/**
@@ -85,4 +86,12 @@ class CreateHostedZoneService {
 	}
 }
 
-export default new CreateHostedZoneService();
+const createHostedZoneService = new CreateHostedZoneService();
+
+export default new BaseService(
+	createHostedZoneService.toolName,
+	createHostedZoneService.description,
+	createHostedZoneService.createHostedZoneInput,
+	createHostedZoneService.createHostedZoneZodInput,
+	createHostedZoneService.createHostedZone,
+);

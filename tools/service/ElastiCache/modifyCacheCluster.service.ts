@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-elasticache";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class ModifyCacheClusterService {
 	/**
@@ -173,4 +174,12 @@ class ModifyCacheClusterService {
 	}
 }
 
-export default new ModifyCacheClusterService();
+const modifyCacheClusterService = new ModifyCacheClusterService();
+
+export default new BaseService(
+	modifyCacheClusterService.toolName,
+	modifyCacheClusterService.description,
+	modifyCacheClusterService.modifyCacheClusterInput,
+	modifyCacheClusterService.modifyCacheClusterZodInput,
+	modifyCacheClusterService.modifyCacheCluster,
+);

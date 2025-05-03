@@ -3,6 +3,7 @@ import {
 	RestoreDBClusterFromSnapshotCommand,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class RestoreDbClusterFromSnapshotService {
 	/**
@@ -98,4 +99,13 @@ class RestoreDbClusterFromSnapshotService {
 	}
 }
 
-export default new RestoreDbClusterFromSnapshotService();
+const restoreDbClusterFromSnapshotService =
+	new RestoreDbClusterFromSnapshotService();
+
+export default new BaseService(
+	restoreDbClusterFromSnapshotService.toolName,
+	restoreDbClusterFromSnapshotService.description,
+	restoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshotInput,
+	restoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshotZodInput,
+	restoreDbClusterFromSnapshotService.restoreDbClusterFromSnapshot,
+);

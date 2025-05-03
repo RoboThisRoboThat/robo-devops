@@ -1,5 +1,6 @@
 import { SQSClient, RemovePermissionCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class RemovePermissionService {
 	/**
@@ -59,4 +60,12 @@ class RemovePermissionService {
 	}
 }
 
-export default new RemovePermissionService();
+const removePermissionService = new RemovePermissionService();
+
+export default new BaseService(
+	removePermissionService.toolName,
+	removePermissionService.description,
+	removePermissionService.removePermissionInput,
+	removePermissionService.removePermissionZodInput,
+	removePermissionService.removePermission,
+);

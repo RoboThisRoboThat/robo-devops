@@ -1,5 +1,6 @@
 import { SQSClient, DeleteQueueCommand } from "@aws-sdk/client-sqs";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class DeleteQueueService {
 	/**
@@ -48,4 +49,12 @@ class DeleteQueueService {
 	}
 }
 
-export default new DeleteQueueService();
+const deleteQueueService = new DeleteQueueService();
+
+export default new BaseService(
+	deleteQueueService.toolName,
+	deleteQueueService.description,
+	deleteQueueService.deleteQueueInput,
+	deleteQueueService.deleteQueueZodInput,
+	deleteQueueService.deleteQueue,
+);

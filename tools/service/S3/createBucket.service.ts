@@ -1,31 +1,40 @@
 import {
 	S3Client,
 	CreateBucketCommand,
-	CreateBucketCommandInput,
-	ObjectLockEnabledForBucket,
-	BucketCannedACL,
+	type BucketCannedACL,
+	type BucketLocationConstraint,
 } from "@aws-sdk/client-s3";
+import type { CreateBucketCommandInput } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
+
+interface CreateBucketInput {
+	bucketName: string;
+	region?: string;
+	acl?: BucketCannedACL;
+	grantRead?: string[];
+	grantWrite?: string[];
+	grantReadAcp?: string[];
+	grantWriteAcp?: string[];
+	objectLockEnabledForBucket?: boolean;
+	tags?: { Key: string; Value: string }[];
+}
+
+interface CreateBucketOutput {
+	bucketName: string;
+	location?: string;
+	region: string;
+}
 
 class CreateBucketService {
 	/**
 	 * Creates a new S3 bucket with specified configurations
-	 * @param bucketName Name of the new S3 bucket
-	 * @param region AWS region in which to create the bucket
-	 * @param acl Canned access control list
-	 * @param grantRead Grant read permissions to specified AWS accounts or groups
-	 * @param grantWrite Grant write permissions to specified AWS accounts or groups
-	 * @param grantReadAcp Grant read access to the bucket ACL
-	 * @param grantWriteAcp Grant write access to the bucket ACL
-	 * @param objectLockEnabledForBucket Whether to enable object lock for the bucket
-	 * @param tags Tags to assign to the new bucket
-	 * @returns Promise containing bucket creation details
 	 */
 
 	toolName = "create-bucket";
 	description = "Creates a new S3 bucket with specified configurations";
 
-	createBucketInput = {
+	inputSchema = {
 		bucketName: z
 			.string()
 			.describe(
@@ -92,29 +101,27 @@ class CreateBucketService {
 			),
 	};
 
-	createBucketZodInput = z.object(this.createBucketInput);
+	zodSchema = z.object(this.inputSchema);
 
-	async createBucket({
-		bucketName,
-		region,
-		acl,
-		grantRead,
-		grantWrite,
-		grantReadAcp,
-		grantWriteAcp,
-		objectLockEnabledForBucket,
-		tags,
-	}: {
-		bucketName: string;
-		region?: string;
-		acl?: BucketCannedACL;
-		grantRead?: string[];
-		grantWrite?: string[];
-		grantReadAcp?: string[];
-		grantWriteAcp?: string[];
-		objectLockEnabledForBucket?: boolean;
-		tags?: { Key: string; Value: string }[];
-	}) {
+	async execute(params: Record<string, unknown>) {
+		// Use type assertion with unknown as intermediary for safety
+		const typedParams = params as unknown as Partial<CreateBucketInput>;
+		const {
+			bucketName,
+			region,
+			acl,
+			grantRead,
+			grantWrite,
+			grantReadAcp,
+			grantWriteAcp,
+			objectLockEnabledForBucket,
+			tags,
+		} = typedParams;
+
+		if (!bucketName) {
+			throw new Error("bucketName is required");
+		}
+
 		try {
 			// Create a new S3 client with the region if specified
 			const clientConfig = region ? { region } : {};
@@ -128,7 +135,7 @@ class CreateBucketService {
 			// Add location constraint if region is specified and not us-east-1
 			if (region && region !== "us-east-1") {
 				input.CreateBucketConfiguration = {
-					LocationConstraint: region,
+					LocationConstraint: region as BucketLocationConstraint,
 				};
 			}
 
@@ -156,8 +163,7 @@ class CreateBucketService {
 
 			// Add object lock configuration if specified
 			if (objectLockEnabledForBucket !== undefined) {
-				input.ObjectLockEnabledForBucket =
-					objectLockEnabledForBucket as ObjectLockEnabledForBucket;
+				input.ObjectLockEnabledForBucket = objectLockEnabledForBucket;
 			}
 
 			// Create the command
@@ -184,4 +190,12 @@ class CreateBucketService {
 	}
 }
 
-export default new CreateBucketService();
+const createBucketService = new CreateBucketService();
+
+export default new BaseService(
+	createBucketService.toolName,
+	createBucketService.description,
+	createBucketService.inputSchema,
+	createBucketService.zodSchema,
+	createBucketService.execute,
+);

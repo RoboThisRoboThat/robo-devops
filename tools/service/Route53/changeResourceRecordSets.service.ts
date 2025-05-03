@@ -4,6 +4,7 @@ import {
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
 import fs from "node:fs";
+import BaseService from "../base.service";
 
 class ChangeResourceRecordSetsService {
 	/**
@@ -77,4 +78,12 @@ class ChangeResourceRecordSetsService {
 	}
 }
 
-export default new ChangeResourceRecordSetsService();
+const changeResourceRecordSetsService = new ChangeResourceRecordSetsService();
+
+export default new BaseService(
+	changeResourceRecordSetsService.toolName,
+	changeResourceRecordSetsService.description,
+	changeResourceRecordSetsService.changeResourceRecordSetsInput,
+	changeResourceRecordSetsService.changeResourceRecordSetsZodInput,
+	changeResourceRecordSetsService.changeResourceRecordSets,
+);

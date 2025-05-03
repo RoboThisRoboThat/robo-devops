@@ -1,5 +1,6 @@
 import { S3Client, GetBucketAclCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetBucketAclService {
 	/**
@@ -79,4 +80,12 @@ class GetBucketAclService {
 	}
 }
 
-export default new GetBucketAclService();
+const getBucketAclService = new GetBucketAclService();
+
+export default new BaseService(
+	getBucketAclService.toolName,
+	getBucketAclService.description,
+	getBucketAclService.getBucketAclInput,
+	getBucketAclService.getBucketAclZodInput,
+	getBucketAclService.getBucketAcl,
+);

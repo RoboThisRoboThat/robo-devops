@@ -4,6 +4,7 @@ import {
 	type Tag,
 } from "@aws-sdk/client-rds";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class RestoreDbInstanceFromDbSnapshotService {
 	/**
@@ -138,4 +139,13 @@ class RestoreDbInstanceFromDbSnapshotService {
 	}
 }
 
-export default new RestoreDbInstanceFromDbSnapshotService();
+const restoreDbInstanceFromDbSnapshotService =
+	new RestoreDbInstanceFromDbSnapshotService();
+
+export default new BaseService(
+	restoreDbInstanceFromDbSnapshotService.toolName,
+	restoreDbInstanceFromDbSnapshotService.description,
+	restoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshotInput,
+	restoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshotZodInput,
+	restoreDbInstanceFromDbSnapshotService.restoreDbInstanceFromDbSnapshot,
+);

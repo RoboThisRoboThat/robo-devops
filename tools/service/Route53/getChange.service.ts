@@ -1,5 +1,6 @@
 import { Route53Client, GetChangeCommand } from "@aws-sdk/client-route-53";
 import { z } from "zod";
+import BaseService from "../base.service";
 
 class GetChangeService {
 	/**
@@ -50,4 +51,12 @@ class GetChangeService {
 	}
 }
 
-export default new GetChangeService();
+const getChangeService = new GetChangeService();
+
+export default new BaseService(
+	getChangeService.toolName,
+	getChangeService.description,
+	getChangeService.getChangeInput,
+	getChangeService.getChangeZodInput,
+	getChangeService.getChange,
+);

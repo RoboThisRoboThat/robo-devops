@@ -10,7 +10,7 @@ import {
 	type _InstanceType,
 } from "@aws-sdk/client-ec2";
 import { z } from "zod";
-
+import BaseService from "../base.service";
 class LaunchInstanceService {
 	/**
 	 * Launches a new EC2 instance with the specified parameters
@@ -332,4 +332,12 @@ class LaunchInstanceService {
 	}
 }
 
-export default new LaunchInstanceService();
+const launchInstanceService = new LaunchInstanceService();
+
+export default new BaseService(
+	launchInstanceService.toolName,
+	launchInstanceService.description,
+	launchInstanceService.launchInstanceInput,
+	launchInstanceService.launchInstanceZodInput,
+	launchInstanceService.launchInstance,
+);
