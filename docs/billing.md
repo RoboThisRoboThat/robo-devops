@@ -47,7 +47,7 @@ The `aws-billing-manager` tool aims to provide insights into your AWS costs and 
         * `--budget-name` (required): The name of the budget to describe.
         * `--output-format` (optional): Specifies the output format (`text`, `json`).
 
-5.  **`create-budget`**: Creates a new AWS budget.
+5.  **`create-bud get`**: Creates a new AWS budget.
 
     * **Description**: This subcommand allows users to define and create a new AWS budget to track costs or usage.
     * **Parameters**:

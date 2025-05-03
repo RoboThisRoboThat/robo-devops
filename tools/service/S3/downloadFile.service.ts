@@ -1,7 +1,7 @@
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import fs from "node:fs";
-import { Readable } from "node:stream";
+import type { Readable } from "node:stream";
 
 class DownloadFileService {
 	/**

@@ -3,7 +3,7 @@ import {
 	ChangeResourceRecordSetsCommand,
 } from "@aws-sdk/client-route-53";
 import { z } from "zod";
-import fs from "fs";
+import fs from "node:fs";
 
 class ChangeResourceRecordSetsService {
 	/**
